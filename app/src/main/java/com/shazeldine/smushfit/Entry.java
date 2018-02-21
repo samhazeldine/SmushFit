@@ -1,28 +1,24 @@
 package com.shazeldine.smushfit;
 
-import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvDate;
-
-import java.io.Serializable;
-import java.util.Date;
-
 // Created by Samuel Hazeldine on 21/02/2018.
 // Defies the Bean for Android
 
-public class Entry implements Serializable {
+public class Entry {
 
-    @CsvBindByName
     private String attribute;
 
-    @CsvBindByName
-    @CsvDate("yyyy.MM.dd")
-    private Date date;
+    private String date;
 
-    @CsvBindByName
     private String value;
 
-    public void Entry() {
+    public Entry() {
 
+    }
+
+    public Entry(String attribute, String date, String value) {
+        this.attribute = attribute;
+        this.date = date;
+        this.value = value;
     }
 
     public String getAttribute() {
@@ -33,11 +29,11 @@ public class Entry implements Serializable {
         this.attribute = attribute;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
