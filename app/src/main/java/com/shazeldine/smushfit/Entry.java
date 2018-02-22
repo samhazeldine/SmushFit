@@ -11,37 +11,22 @@ public class Entry {
 
     private String value;
 
-    public Entry() {
-
-    }
-
     public Entry(String attribute, String date, String value) {
         this.attribute = attribute;
-        this.date = date;
         this.value = value;
+        this.date = date;
     }
 
     public String getAttribute() {
         return attribute;
     }
 
-    public void setAttribute(String attribute) {
-        this.attribute = attribute;
-    }
-
     public String getDate() {
         return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
 }
