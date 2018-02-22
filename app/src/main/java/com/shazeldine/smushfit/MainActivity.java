@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import com.opencsv.CSVReader;
 import com.shazeldine.smushfit.dummy.DummyContent;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,6 +20,7 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupData();
+        generateInsights();
     }
 
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
@@ -55,6 +55,10 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
             tempUserData.add(new Entry(temp[0], temp[1], temp[2]));
         }
         return tempUserData;
+    }
+
+    public void generateInsights() {
+
     }
 
 }
