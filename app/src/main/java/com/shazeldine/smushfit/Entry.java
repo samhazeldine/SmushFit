@@ -5,20 +5,13 @@ package com.shazeldine.smushfit;
 
 public class Entry {
 
-    private String attribute;
-
     private String date;
 
     private String value;
 
-    public Entry(String attribute, String date, String value) {
-        this.attribute = attribute;
+    public Entry(String date, String value) {
         this.value = value;
         this.date = date;
-    }
-
-    public String getAttribute() {
-        return attribute;
     }
 
     public String getDate() {

@@ -13,14 +13,14 @@ import java.util.List;
 
 public class MainActivity extends FragmentActivity implements InsightFragment.OnListFragmentInteractionListener {
 
-    private List<Entry> userData;
+    private UserData userData;
+    private Lookup lookup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupData();
-        generateInsights();
     }
 
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
@@ -29,7 +29,8 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
     public void setupData() {
         if (userData == null) {
             List<String[]> userDataString = readCSV();
-            userData = convertToBeanArray(userDataString);
+            userData = new UserData();
+            convertToUserData(userDataString);
         }
     }
 
@@ -48,17 +49,12 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
         }
     }
 
-    // Takes a 2D array of Strings and converts into a list of beans.
-    public List<Entry> convertToBeanArray(List<String[]> userDataStrings) {
-        List<Entry> tempUserData = new ArrayList<>();
-        for (String[] temp : userDataStrings) {
-            tempUserData.add(new Entry(temp[0], temp[1], temp[2]));
+    // Converts the elements into a UserData object
+    public void convertToUserData(List<String[]> userDataString) {
+        for(String[] entryString : userDataString) {
+            Entry entry = new Entry(entryString[1], entryString[2]);
+            userData.addDataForAttribute(entryString[0], entry);
         }
-        return tempUserData;
-    }
-
-    public void generateInsights() {
-
     }
 
 }
