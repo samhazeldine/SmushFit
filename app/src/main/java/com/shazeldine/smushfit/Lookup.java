@@ -10,5 +10,9 @@ import java.util.List;
 
 public class Lookup {
 
-    public getValueForAttributeAtDate(UserData userData, )
+    public String getValueForAttributeAtDate(UserData userData, String attribute, String date) {
+        Entry entry = userData.getEntriesOfAttribute(attribute).getEntryForDate(date);
+        String value = entry.getValue();
+        return value;
+    }
 }

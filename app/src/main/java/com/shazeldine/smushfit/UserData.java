@@ -7,36 +7,32 @@ import java.util.ArrayList;
 
 public class UserData {
 
-    private ArrayList<EntriesOfAttribute> userData;
+    private ArrayList<EntriesOfAttribute> data;
 
     public UserData() {
-        userData = new ArrayList<EntriesOfAttribute>();
+        data = new ArrayList();
     }
 
+    //Add data to the correct EntriesOfAttribute
     public void addDataForAttribute(String attribute, Entry entry) {
-        if (userData.size() == 0) {
-            userData.add(new EntriesOfAttribute(attribute));
-        }
-        else if (addToCorrectAttribute(attribute, entry)) {
-        }
-        else {
-            userData.add(new EntriesOfAttribute(attribute));
-        }
-    }
-
-    public Boolean addToCorrectAttribute(String attribute, Entry entry) {
-        for(EntriesOfAttribute entries : userData) {
-            if (entries.getAttributeType().equals(attribute)) {
+        Boolean added = false;
+        for (EntriesOfAttribute entries: data) {
+            if(entries.getAttributeType().equals(attribute)) {
                 entries.addEntry(attribute, entry);
-                return true;
+                added = true;
             }
         }
-        return false;
+        if (added == false) {
+            EntriesOfAttribute entriesOfAttribute = new EntriesOfAttribute(attribute);
+            entriesOfAttribute.addEntry(attribute, entry);
+            data.add(entriesOfAttribute);
+        }
     }
 
     //Gets the EntriesOfAttribute for a specific attribute
+    //TODO Need to add exception case instead of null
     public EntriesOfAttribute getEntriesOfAttribute(String attribute) {
-        for(EntriesOfAttribute entries : userData) {
+        for(EntriesOfAttribute entries : data) {
             if(entries.getAttributeType().equals(attribute)) {
                 return entries;
             }

@@ -14,13 +14,13 @@ import java.util.List;
 public class MainActivity extends FragmentActivity implements InsightFragment.OnListFragmentInteractionListener {
 
     private UserData userData;
-    private Lookup lookup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupData();
+        test();
     }
 
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
@@ -55,6 +55,12 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
             Entry entry = new Entry(entryString[1], entryString[2]);
             userData.addDataForAttribute(entryString[0], entry);
         }
+    }
+
+    public void test() {
+        Lookup lookup = new Lookup();
+        String testStr = lookup.getValueForAttributeAtDate(userData, "mood", "2015-09-11");
+        Log.i("SMUSHFIT_TEST_TAG", testStr);
     }
 
 }
