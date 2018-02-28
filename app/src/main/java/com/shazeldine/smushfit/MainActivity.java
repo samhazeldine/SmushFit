@@ -8,7 +8,6 @@ import com.shazeldine.smushfit.dummy.DummyContent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends FragmentActivity implements InsightFragment.OnListFragmentInteractionListener {
@@ -20,7 +19,7 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupData();
-        test();
+        calculateInsights();
     }
 
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
@@ -42,8 +41,7 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
             CSVReader csvReader = new CSVReader(reader);
             List<String[]> userDataStrings = csvReader.readAll();
             return userDataStrings;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.e("SMUSHFIT_LOG_TAG", "ERROR (IOException): ", e);
             return null;
         }
@@ -51,16 +49,15 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
 
     // Converts the elements into a UserData object
     public void convertToUserData(List<String[]> userDataString) {
-        for(String[] entryString : userDataString) {
+        for (String[] entryString : userDataString) {
             Entry entry = new Entry(entryString[1], entryString[2]);
             userData.addDataForAttribute(entryString[0], entry);
         }
     }
 
-    public void test() {
+    public void calculateInsights() {
         Lookup lookup = new Lookup();
-        String testStr = lookup.getValueForAttributeAtDate(userData, "mood", "2015-09-11");
-        Log.i("SMUSHFIT_TEST_TAG", testStr);
+        double correlationPValue = lookup.findCorrelation(userData, "test1", "test2");
+        Log.i("SMUSHFIT_TEST_TAG", "Correlation value is: " + correlationPValue);
     }
-
 }

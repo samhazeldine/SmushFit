@@ -22,6 +22,10 @@ public class EntriesOfAttribute {
         }
     }
 
+    public List<Entry> getEntries() {
+        return entries;
+    }
+
     public String getAttributeType () {
         return attributeType;
     }
