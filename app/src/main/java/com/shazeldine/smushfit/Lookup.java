@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 /**
  * Created by Samuel Hazeldine on 22/02/2018.
  */
@@ -55,6 +57,8 @@ public class Lookup {
         return nonEmptyValues;
     }
 
+    // Uses the Apache commons correlation function.
+    // Only works when the Attributes are doubles
     public double findCorrelation (UserData userData, String attr1, String attr2) {
         List<String[]> nonEmptyValues = getNonEmptyValueOfTwoAttributes(userData, attr1, attr2);
         double[][] correlationValues = listOfStringToDoubleArray(nonEmptyValues);
@@ -63,6 +67,8 @@ public class Lookup {
         return correlationPValue;
     }
 
+    // Converts a list of String arrays into an array of doubles
+    // TODO - add exceptions
     private double[][] listOfStringToDoubleArray(List<String[]> nonEmptyValues) {
         double[][] doubleValues = new double[2][nonEmptyValues.size()];
         for(int i = 0; i < nonEmptyValues.size(); i++) {
@@ -71,5 +77,38 @@ public class Lookup {
             doubleValues[1][i] = Double.parseDouble(values[1]);
         }
         return doubleValues;
+    }
+
+    // Converts a pearson correlation likelihood to a phrase of liklihood.
+    // Uses the WHO mapping of likelihood
+    private String pearsonToText(double pearsonLikelihood) {
+        double absPearsonLikelihood = abs(pearsonLikelihood);
+        if (absPearsonLikelihood > 0.99) {
+            return "extremely likely";
+        }
+        else if (absPearsonLikelihood > 0.9 && absPearsonLikelihood <= 0.99) {
+            return "very likely";
+        }
+        else if (absPearsonLikelihood > 0.7 && absPearsonLikelihood <= 0.9) {
+            return "likely";
+        }
+        else if (absPearsonLikelihood > 0.55 && absPearsonLikelihood <= 0.7) {
+            return "probable - more likely than not";
+        }
+        else if (absPearsonLikelihood > 0.45 && absPearsonLikelihood <= 0.55) {
+            return "equally likely as not";
+        }
+        else if (absPearsonLikelihood > 0.3 && absPearsonLikelihood <= 0.45) {
+            return "possible - less likely than not";
+        }
+        else if (absPearsonLikelihood > 0.1 && absPearsonLikelihood <= 0.3) {
+            return "unlikely";
+        }
+        else if (absPearsonLikelihood > 0.01 && absPearsonLikelihood <= 0.1) {
+            return "veryl unlikely";
+        }
+        else {
+            return "extremely unlikely";
+        }
     }
 }
