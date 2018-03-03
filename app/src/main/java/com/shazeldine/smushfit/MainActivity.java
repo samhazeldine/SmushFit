@@ -57,7 +57,8 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
 
     public void calculateInsights() {
         Lookup lookup = new Lookup();
-        double correlationPValue = lookup.findCorrelation(userData, "test1", "test2");
-        Log.i("SMUSHFIT_TEST_TAG", "Correlation value is: " + correlationPValue);
+        NLGGenerator generator = new NLGGenerator();
+        String output = generator.correlationGenerator("steps");
+        Log.i("SMUSHFIT_TEST", output);
     }
 }

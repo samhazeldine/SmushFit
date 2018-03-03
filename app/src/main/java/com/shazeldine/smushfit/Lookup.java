@@ -78,37 +78,4 @@ public class Lookup {
         }
         return doubleValues;
     }
-
-    // Converts a pearson correlation likelihood to a phrase of liklihood.
-    // Uses the WHO mapping of likelihood
-    private String pearsonToText(double pearsonLikelihood) {
-        double absPearsonLikelihood = abs(pearsonLikelihood);
-        if (absPearsonLikelihood > 0.99) {
-            return "extremely likely";
-        }
-        else if (absPearsonLikelihood > 0.9 && absPearsonLikelihood <= 0.99) {
-            return "very likely";
-        }
-        else if (absPearsonLikelihood > 0.7 && absPearsonLikelihood <= 0.9) {
-            return "likely";
-        }
-        else if (absPearsonLikelihood > 0.55 && absPearsonLikelihood <= 0.7) {
-            return "probable - more likely than not";
-        }
-        else if (absPearsonLikelihood > 0.45 && absPearsonLikelihood <= 0.55) {
-            return "equally likely as not";
-        }
-        else if (absPearsonLikelihood > 0.3 && absPearsonLikelihood <= 0.45) {
-            return "possible - less likely than not";
-        }
-        else if (absPearsonLikelihood > 0.1 && absPearsonLikelihood <= 0.3) {
-            return "unlikely";
-        }
-        else if (absPearsonLikelihood > 0.01 && absPearsonLikelihood <= 0.1) {
-            return "veryl unlikely";
-        }
-        else {
-            return "extremely unlikely";
-        }
-    }
 }
