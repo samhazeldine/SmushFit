@@ -1,28 +1,47 @@
 package com.shazeldine.smushfit;
 
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Created by Samuel Hazeldine on 02/03/2018.
+ * Created by Samuel Hazeldine on 05/03/2018.
  */
 
 public class Content {
-    private static List<Insight> items;
-    int idCount;
+    public static final List<Insight> items = new ArrayList();
+    private static final Map<String, Insight> itemMap = new HashMap();
 
-    public Content () {
-        items = new ArrayList();
-        idCount = 0;
-        items.add(new Insight(1, "WOOP TESTING"));
+    public static void addItem(Insight insight) {
+        items.add(insight);
+        itemMap.put(insight.getId(), insight);
     }
 
-    public void addItem (String insight) {
-        items.add(new Insight(idCount, insight));
-        idCount++;
+    public static Insight createInsight() {
+        return new Insight("1", "WOOOOOOO");
     }
 
-    public static List<Insight> getItems () {
-        return items;
+    static {
+        addItem(createInsight());
+    }
+
+    public static class Insight {
+        private String id;
+        private String content;
+
+        public Insight(String id, String content) {
+            this.id = id;
+            this.content = content;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getContent() {
+            return content;
+        }
     }
 }

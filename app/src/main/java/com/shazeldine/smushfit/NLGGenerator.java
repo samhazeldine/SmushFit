@@ -23,6 +23,22 @@ public class NLGGenerator {
         realiser = new Realiser(lexicon);
     }
 
+    // Creates an NL phrase for min or max
+    public String maxGenerator (String attr, double max) {
+        SPhraseSpec p = nlgFactory.createClause();
+        p.setFeature(Feature.PERSON, "SECOND");
+        NPPhraseSpec subject = nlgFactory.createNounPhrase("your");
+        NPPhraseSpec insightType = nlgFactory.createNounPhrase(attr);
+        VPPhraseSpec verb = nlgFactory.createVerbPhrase("be");
+        NPPhraseSpec number = nlgFactory.createNounPhrase(Double.toString(max));
+        verb.addComplement(number);
+        subject.addModifier(insightType);
+        p.setSubject(subject);
+        p.setVerb(verb);
+        String output = realiser.realiseSentence(p);
+        return output;
+    }
+
     // Converts an attribute to
     private String attributeConverter (String attr) {
         switch (attr) {
@@ -35,9 +51,24 @@ public class NLGGenerator {
         }
     }
 
-    // Converts a pearson correlation likelihood to a phrase of liklihood.
+    // Converts an attribute to a
+
+    // Converts a double to positive or negative
+    public String doubleToPositiveNegative (double pearsonLikelihood) {
+        if (pearsonLikelihood > 0) {
+            return "positive";
+        }
+        else if (pearsonLikelihood < 0) {
+            return "negative";
+        }
+        else {
+            return "no";
+        }
+    }
+
+    // Converts a pearson correlation likelihood to a phrase of likelihood.
     // Uses the WHO mapping of likelihood
-    public String pearsonToText(double pearsonLikelihood) {
+    public String pearsonToLikelihood(double pearsonLikelihood) {
         double absPearsonLikelihood = abs(pearsonLikelihood);
         if (absPearsonLikelihood > 0.99) {
             return "extremely likely";
@@ -90,14 +121,4 @@ public class NLGGenerator {
         return output;
     }
     */
-    public String correlationGenerator (String attr1) {
-        SPhraseSpec p = nlgFactory.createClause();
-        p.setFrontModifier("On days");
-        p.setSubject(nlgFactory.createNounPhrase("you"));
-        VPPhraseSpec verb = nlgFactory.createVerbPhrase(attributeConverter(attr1));
-        verb.addPostModifier("more");
-        p.setVerb(verb);
-        String output = realiser.realiseSentence(p);
-        return output;
-    }
 }

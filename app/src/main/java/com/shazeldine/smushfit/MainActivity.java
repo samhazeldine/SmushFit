@@ -1,16 +1,15 @@
 package com.shazeldine.smushfit;
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import com.opencsv.CSVReader;
-import com.shazeldine.smushfit.dummy.DummyContent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements InsightFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
     private UserData userData;
 
@@ -20,9 +19,6 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
         setContentView(R.layout.activity_main);
         setupData();
         calculateInsights();
-    }
-
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
     }
 
     public void setupData() {
@@ -42,7 +38,7 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
             List<String[]> userDataStrings = csvReader.readAll();
             return userDataStrings;
         } catch (IOException e) {
-            Log.e("SMUSHFIT_LOG_TAG", "ERROR (IOException): ", e);
+            Log.e("SMUSHFIT_ERROR_TAG", "ERROR (IOException): ", e);
             return null;
         }
     }
@@ -58,7 +54,7 @@ public class MainActivity extends FragmentActivity implements InsightFragment.On
     public void calculateInsights() {
         Lookup lookup = new Lookup();
         NLGGenerator generator = new NLGGenerator();
-        String output = generator.correlationGenerator("steps");
+        String output = generator.maxGenerator("highest step count", 10.0);
         Log.i("SMUSHFIT_TEST", output);
     }
 }

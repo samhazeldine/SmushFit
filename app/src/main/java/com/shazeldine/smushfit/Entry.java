@@ -3,6 +3,9 @@ package com.shazeldine.smushfit;
 // Created by Samuel Hazeldine on 21/02/2018.
 // Defies the Bean for Android
 
+
+import java.text.DateFormat;
+
 public class Entry {
 
     private String date;

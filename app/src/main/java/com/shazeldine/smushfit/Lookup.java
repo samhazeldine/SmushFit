@@ -1,13 +1,14 @@
 package com.shazeldine.smushfit;
 
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
+import org.apache.commons.math3.stat.descriptive.rank.Max;
+import org.apache.commons.math3.stat.descriptive.rank.Min;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import static java.lang.Math.abs;
 
 /**
  * Created by Samuel Hazeldine on 22/02/2018.
@@ -61,20 +62,67 @@ public class Lookup {
     // Only works when the Attributes are doubles
     public double findCorrelation (UserData userData, String attr1, String attr2) {
         List<String[]> nonEmptyValues = getNonEmptyValueOfTwoAttributes(userData, attr1, attr2);
-        double[][] correlationValues = listOfStringToDoubleArray(nonEmptyValues);
+        double[][] correlationValues = listOfStringArrayToArray(nonEmptyValues);
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
         double correlationPValue = pearsonsCorrelation.correlation(correlationValues[0], correlationValues[1]);
         return correlationPValue;
     }
 
+    // Uses Apache Commons library to find a trend in the data
+    // TODO - finish!
+    public double findTrend (UserData userData, String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        return 0.0;
+    }
+
+    // Uses Apache Commons library to find mean values for an attribute
+    public double findMean (UserData userData, String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        Mean meanCalc = new Mean();
+        double mean = meanCalc.evaluate(doubleValues);
+        return mean;
+    }
+
+    // Uses Apache Commons library to find max value of an attribute
+    public double findMax(UserData userData, String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        Max maxCalc = new Max();
+        double max = maxCalc.evaluate(doubleValues);
+        return max;
+    }
+
+    // Uses Apache Commons library to find min value of an attribute
+    public double findMin(UserData userData, String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        Min minCalc = new Min();
+        double max = minCalc.evaluate(doubleValues);
+        return max;
+    }
+
+
     // Converts a list of String arrays into an array of doubles
     // TODO - add exceptions
-    private double[][] listOfStringToDoubleArray(List<String[]> nonEmptyValues) {
+    private double[][] listOfStringArrayToArray(List<String[]> nonEmptyValues) {
         double[][] doubleValues = new double[2][nonEmptyValues.size()];
         for(int i = 0; i < nonEmptyValues.size(); i++) {
             String[] values = nonEmptyValues.get(i);
             doubleValues[0][i] = Double.parseDouble(values[0]);
             doubleValues[1][i] = Double.parseDouble(values[1]);
+        }
+        return doubleValues;
+    }
+
+    // Converts a list of String arrays into an array of doubles
+    // TODO - add exceptions
+    private double[] listOfStringToArray(List<String> nonEmptyValues) {
+        double[] doubleValues = new double[nonEmptyValues.size()];
+        for(int i = 0; i < nonEmptyValues.size(); i++) {
+            String value = nonEmptyValues.get(i);
+            doubleValues[i] = Double.parseDouble(value);
         }
         return doubleValues;
     }
