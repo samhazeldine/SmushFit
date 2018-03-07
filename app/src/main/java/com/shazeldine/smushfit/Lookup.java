@@ -5,6 +5,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Max;
 import org.apache.commons.math3.stat.descriptive.rank.Min;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -68,13 +69,6 @@ public class Lookup {
         return correlationPValue;
     }
 
-    // Uses Apache Commons library to find a trend in the data
-    // TODO - finish!
-    public double findTrend (UserData userData, String attr) {
-        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
-        double[] doubleValues = listOfStringToArray(nonEmptyValues);
-        return 0.0;
-    }
 
     // Uses Apache Commons library to find mean values for an attribute
     public double findMean (UserData userData, String attr) {
@@ -101,6 +95,18 @@ public class Lookup {
         Min minCalc = new Min();
         double max = minCalc.evaluate(doubleValues);
         return max;
+    }
+
+    // Uses Apache Commons library to find trend slope
+    public double findTrend(UserData userData, String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        SimpleRegression regression = new SimpleRegression();
+        for (int i=0; i<nonEmptyValues.size(); i++) {
+           regression.addData(i, doubleValues[i]);
+        }
+        double result = regression.getSlope();
+        return result;
     }
 
 

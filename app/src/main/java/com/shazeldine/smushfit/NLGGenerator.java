@@ -35,6 +35,7 @@ public class NLGGenerator {
         return minMaxMeanGenerator(attr, min, "minimum");
     }
 
+    // Creates an NL phrase for average
     public String averageGenerator (String attr, double mean) {
         return minMaxMeanGenerator(attr, mean, "average");
     }
@@ -73,8 +74,9 @@ public class NLGGenerator {
     // [3] you vs your
     // [4] object (e.g. step-count) (this is needed with sentences such as "Your step-count is higher"
     //      rather than sentences such as "You sleep more".
+    // [5] decrease (e.g. sleep less, listen to less tracks)
     private String[] attributeConverter (String attr) {
-        String[] temp = new String[5];
+        String[] temp = new String[6];
         switch (attr) {
             case "sleep":
                 temp[0] = "hours";
@@ -82,6 +84,7 @@ public class NLGGenerator {
                 temp[2] = "sleep more";
                 temp[3] = "you";
                 temp[4] = "";
+                temp[5] = "sleep less";
                 break;
             case "steps":
                 temp[0] = "steps";
@@ -89,6 +92,7 @@ public class NLGGenerator {
                 temp[2] = "is higher";
                 temp[3] = "your";
                 temp[4] = "step-count";
+                temp[5] = "is lower";
                 break;
             case "distracting_min":
                 temp[0] = "minutes";
@@ -96,6 +100,7 @@ public class NLGGenerator {
                 temp[2] = "are distracted more";
                 temp[3] = "you";
                 temp[4] = "";
+                temp[5] = "are distracted less";
                 break;
             case "events":
                 temp[0] = "";
@@ -103,6 +108,7 @@ public class NLGGenerator {
                 temp[2] = "go to more events";
                 temp[3] = "you";
                 temp[4] = "";
+                temp[5] = "go to less events";
                 break;
             case "mood":
                 temp[0] = "";
@@ -110,6 +116,7 @@ public class NLGGenerator {
                 temp[2] = "are in a better mood";
                 temp[3] = "you";
                 temp[4] = "";
+                temp[5] = "are in a worse mood";
                 break;
             case "productive_min":
                 temp[0] = "minutes";
@@ -117,6 +124,7 @@ public class NLGGenerator {
                 temp[2] = "are more productive";
                 temp[3] = "you";
                 temp[4] = "";
+                temp[5] = "are less productive";
                 break;
             case "sleep_awakenings":
                 temp[0] = "";
@@ -124,6 +132,7 @@ public class NLGGenerator {
                 temp[2] = "wake more in the night";
                 temp[3] = "you";
                 temp[4] = "";
+                temp[5] = "wake up less in the night";
                 break;
             case "tracks":
                 temp[0] = "songs";
@@ -131,6 +140,7 @@ public class NLGGenerator {
                 temp[2] = "listen to more music";
                 temp[3] = "you";
                 temp[4] = "";
+                temp[5] = "listen to less music";
                 break;
 
         }
@@ -138,15 +148,15 @@ public class NLGGenerator {
     }
 
     // Converts a double to positive or negative
-    public String doubleToPositiveNegative (double pearsonLikelihood) {
+    public int doubleToPositiveNegative (double pearsonLikelihood) {
         if (pearsonLikelihood > 0) {
-            return "negative";
+            return 2;
         }
         else if (pearsonLikelihood < 0) {
-            return "positive";
+            return 5;
         }
         else {
-            return "no";
+            return 0;
         }
     }
 
@@ -185,6 +195,7 @@ public class NLGGenerator {
 
     // Generates the statements for correlation
     public String correlationGenerator (String attr1, String attr2, double pearsonLikelihood) {
+        int positiveNegative = doubleToPositiveNegative(pearsonLikelihood);
         //On days when you X
         SPhraseSpec p = nlgFactory.createClause();
         String[] attr1Converted = attributeConverter(attr1);
@@ -209,7 +220,7 @@ public class NLGGenerator {
         NPPhraseSpec subject3 = nlgFactory.createNounPhrase(attr2Converted[3]);
         subject3.addModifier(object);
         p3.setSubject(subject3);
-        p3.setVerb(attr2Converted[2]);
+        p3.setVerb(attr2Converted[positiveNegative]);
         p3.setFeature(Feature.TENSE, Tense.FUTURE);
 
         CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();

@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
         NLGGenerator generator = new NLGGenerator();
         Log.i("SMUSHFIT_TEST", "TEST_BEGIN");
         for (int i = 0; i < attributes.length; i++) {
-            double cor = lookup.findCorrelation(userData, attributes[i], attributes[i]);
-            String output = generator.correlationGenerator(attributes[i], attributes[i], cor);
+            double cor = lookup.findCorrelation(userData, attributes[i], "mood");
+            String output = generator.correlationGenerator(attributes[i], "mood", cor);
             Log.i("SMUSHFIT_TEST", output);
             double max = lookup.findMax(userData, attributes[i]);
             output = generator.maxGenerator(attributes[i], max);
@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         }
         generator.testGenerator();
         Log.i("SMUSHFIT_TEST","TEST_END");
-
+        double testData = lookup.findTrend(userData, "steps");
+        Log.i("SMUSHFIT_TEST", "TREND DATA: " + testData);
     }
 }
