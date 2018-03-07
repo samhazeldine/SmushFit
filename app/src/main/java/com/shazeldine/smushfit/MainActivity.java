@@ -54,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
     public void calculateInsights() {
         Lookup lookup = new Lookup();
         NLGGenerator generator = new NLGGenerator();
-        String output = generator.maxGenerator("highest step count", 10.0);
+        double avg = lookup.findCorrelation(userData, "distracting_min", "events");
+        String output = generator.correlationGenerator("distracting_min", "events", avg);
         Log.i("SMUSHFIT_TEST", output);
     }
 }
