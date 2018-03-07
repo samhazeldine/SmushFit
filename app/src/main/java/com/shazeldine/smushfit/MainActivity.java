@@ -12,7 +12,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private UserData userData;
-
+    private String[] attributes =
+            {"sleep", "steps", "distracting_min", "events", "mood", "productive_min", "sleep_awakenings", "tracks"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +55,17 @@ public class MainActivity extends AppCompatActivity {
     public void calculateInsights() {
         Lookup lookup = new Lookup();
         NLGGenerator generator = new NLGGenerator();
-        double avg = lookup.findCorrelation(userData, "distracting_min", "events");
-        String output = generator.correlationGenerator("distracting_min", "events", avg);
-        Log.i("SMUSHFIT_TEST", output);
+        Log.i("SMUSHFIT_TEST", "TEST_BEGIN");
+        for (int i = 0; i < attributes.length; i++) {
+            double cor = lookup.findCorrelation(userData, attributes[i], attributes[i]);
+            String output = generator.correlationGenerator(attributes[i], attributes[i], cor);
+            Log.i("SMUSHFIT_TEST", output);
+            double max = lookup.findMax(userData, attributes[i]);
+            output = generator.maxGenerator(attributes[i], max);
+            Log.i("SMUSHFIT_TEST", output);
+        }
+        generator.testGenerator();
+        Log.i("SMUSHFIT_TEST","TEST_END");
+
     }
 }

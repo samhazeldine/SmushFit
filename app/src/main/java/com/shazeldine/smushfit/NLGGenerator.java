@@ -1,6 +1,8 @@
 package com.shazeldine.smushfit;
 
 
+import android.util.Log;
+
 import simplenlg.framework.*;
 import simplenlg.lexicon.*;
 import simplenlg.realiser.english.*;
@@ -47,7 +49,7 @@ public class NLGGenerator {
         String maxAttr = minMax + " " + convertedValues[1];
         NPPhraseSpec insightType = nlgFactory.createNounPhrase(maxAttr);
         VPPhraseSpec verb = nlgFactory.createVerbPhrase("be");
-        NPPhraseSpec number = nlgFactory.createNounPhrase(Double.toString(max) + " " + convertedValues[0]);
+        NPPhraseSpec number = nlgFactory.createNounPhrase(doubleToString(max) + " " + convertedValues[0]);
         verb.addComplement(number);
         subject.addModifier(insightType);
         p.setSubject(subject);
@@ -56,61 +58,79 @@ public class NLGGenerator {
         return output;
     }
 
+    //converts a double to a String nicely
+    public String doubleToString(double d) {
+        if(d == (long) d)
+            return String.format("%d",(long)d);
+        else
+            return String.format("%s",d);
+    }
+
     // Converts an attribute to various values
     // [0] is units
     // [1] for amount (e.g. number of steps)
     // [2] increase (e.g. sleep more, listen to more tracks)
     // [3] you vs your
+    // [4] object (e.g. step-count) (this is needed with sentences such as "Your step-count is higher"
+    //      rather than sentences such as "You sleep more".
     private String[] attributeConverter (String attr) {
-        String[] temp = new String[4];
+        String[] temp = new String[5];
         switch (attr) {
             case "sleep":
                 temp[0] = "hours";
                 temp[1] = "amount of sleep";
                 temp[2] = "sleep more";
                 temp[3] = "you";
+                temp[4] = "";
                 break;
             case "steps":
                 temp[0] = "steps";
                 temp[1] = "step-count";
-                temp[2] = "step-count is higher";
+                temp[2] = "is higher";
                 temp[3] = "your";
+                temp[4] = "step-count";
                 break;
             case "distracting_min":
                 temp[0] = "minutes";
                 temp[1] = "time spent distracted";
                 temp[2] = "are distracted more";
                 temp[3] = "you";
+                temp[4] = "";
                 break;
             case "events":
                 temp[0] = "";
                 temp[1] = "number of events";
                 temp[2] = "go to more events";
                 temp[3] = "you";
+                temp[4] = "";
                 break;
             case "mood":
                 temp[0] = "";
                 temp[1] = "";
                 temp[2] = "are in a better mood";
                 temp[3] = "you";
+                temp[4] = "";
                 break;
             case "productive_min":
                 temp[0] = "minutes";
                 temp[1] = "time spent being productive";
                 temp[2] = "are more productive";
                 temp[3] = "you";
+                temp[4] = "";
                 break;
             case "sleep_awakenings":
                 temp[0] = "";
                 temp[1] = "times awoken in the night";
                 temp[2] = "wake more in the night";
                 temp[3] = "you";
+                temp[4] = "";
                 break;
             case "tracks":
                 temp[0] = "songs";
                 temp[1] = "number of tracks listened to";
                 temp[2] = "listen to more music";
                 temp[3] = "you";
+                temp[4] = "";
                 break;
 
         }
@@ -144,13 +164,13 @@ public class NLGGenerator {
             return "likely";
         }
         else if (absPearsonLikelihood > 0.55 && absPearsonLikelihood <= 0.7) {
-            return "probable - more likely than not";
+            return "probable (more likely than not) ";
         }
         else if (absPearsonLikelihood > 0.45 && absPearsonLikelihood <= 0.55) {
             return "equally likely as not";
         }
         else if (absPearsonLikelihood > 0.3 && absPearsonLikelihood <= 0.45) {
-            return "possible - less likely than not";
+            return "possible (less likely than not)";
         }
         else if (absPearsonLikelihood > 0.1 && absPearsonLikelihood <= 0.3) {
             return "unlikely";
@@ -168,22 +188,27 @@ public class NLGGenerator {
         //On days when you X
         SPhraseSpec p = nlgFactory.createClause();
         String[] attr1Converted = attributeConverter(attr1);
-        p.setSubject(attr1Converted[3]);
-        p.setFrontModifier("On days when");
+        NPPhraseSpec subject = nlgFactory.createNounPhrase(attr1Converted[3]);
+        subject.addModifier(attr1Converted[4]);
+        p.setSubject(subject);
+        p.setFrontModifier("On days when ");
         p.setVerb(attr1Converted[2]);
 
 
-        //You are very likely to Y
+        //it is likely
         SPhraseSpec p2 = nlgFactory.createClause();
         String[] attr2Converted = attributeConverter(attr2);
         p2.setSubject("it");
-        VPPhraseSpec verb = nlgFactory.createVerbPhrase("is");
+        VPPhraseSpec verb = nlgFactory.createVerbPhrase("be");
         verb.setPostModifier(pearsonToLikelihood(pearsonLikelihood));
         p2.setVerb(verb);
 
-
+        //your x will be higher
         SPhraseSpec p3 = nlgFactory.createClause();
-        p3.setSubject(attr2Converted[3]);
+        NPPhraseSpec object = nlgFactory.createNounPhrase(attr2Converted[4]);
+        NPPhraseSpec subject3 = nlgFactory.createNounPhrase(attr2Converted[3]);
+        subject3.addModifier(object);
+        p3.setSubject(subject3);
         p3.setVerb(attr2Converted[2]);
         p3.setFeature(Feature.TENSE, Tense.FUTURE);
 
@@ -197,8 +222,11 @@ public class NLGGenerator {
         c.addCoordinate(b);
         c.setConjunction(",");
 
-
         String output = realiser.realiseSentence(c);
         return output;
+    }
+
+    public void testGenerator () {
+
     }
 }
