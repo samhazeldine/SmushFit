@@ -10,6 +10,8 @@ import java.util.List;
 public class EntriesOfAttribute {
     private String attributeType;
     private List<Entry> entries;
+    private String goal;
+    private String goalAim;
 
     public EntriesOfAttribute (String attributeType) {
         this.attributeType = attributeType;
@@ -28,6 +30,15 @@ public class EntriesOfAttribute {
 
     public String getAttributeType () {
         return attributeType;
+    }
+
+    public String getGoal() {
+        return goal;
+    }
+
+    public void setGoals(String goal, String goalAim) {
+        this.goal = goal;
+        this.goalAim = goalAim;
     }
 
     // Returns the entry that matches a specific date

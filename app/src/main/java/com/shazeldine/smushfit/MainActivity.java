@@ -1,8 +1,11 @@
 package com.shazeldine.smushfit;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+
 import com.opencsv.CSVReader;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupData();
-        calculateInsights();
+        testInsights();
+        testInsightsTwo();
     }
 
     public void setupData() {
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
             userData = new UserData();
             convertToUserData(userDataString);
         }
+        setGoals();
     }
 
     // Reads each line in the CSV and converts it into a 2D array of Strings.
@@ -52,7 +57,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void calculateInsights() {
+    private void setGoals () {
+        userData.getEntriesOfAttribute("sleep").setGoals("480", "High");
+        userData.getEntriesOfAttribute("steps").setGoals("10000", "High");
+        userData.getEntriesOfAttribute("distracting_min").setGoals("60", "Low");
+        userData.getEntriesOfAttribute("events").setGoals("None", "None");
+        userData.getEntriesOfAttribute("mood").setGoals("5", "High");
+        userData.getEntriesOfAttribute("productive_min").setGoals("120", "High");
+        userData.getEntriesOfAttribute("sleep_awakenings").setGoals("1", "Low");
+        userData.getEntriesOfAttribute("tracks").setGoals("None", "None");
+    }
+
+    public void testInsights() {
+        Lookup lookup = new Lookup();
+        NLGGenerator generator = new NLGGenerator();
+        generator.testGenerator();
+    }
+
+    private void testInsightsTwo () {
         Lookup lookup = new Lookup();
         NLGGenerator generator = new NLGGenerator();
         Log.i("SMUSHFIT_TEST", "TEST_BEGIN");
@@ -68,5 +90,10 @@ public class MainActivity extends AppCompatActivity {
         Log.i("SMUSHFIT_TEST","TEST_END");
         double testData = lookup.findTrend(userData, "steps");
         Log.i("SMUSHFIT_TEST", "TREND DATA: " + testData);
+    }
+
+    public void goToLookupActivity(View view) {
+        Intent intent = new Intent(this, LookupActivity.class);
+        startActivity(intent);
     }
 }

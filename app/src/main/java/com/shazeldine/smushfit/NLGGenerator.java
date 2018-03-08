@@ -27,22 +27,23 @@ public class NLGGenerator {
 
     // Creates an NL phrase for max
     public String maxGenerator (String attr, double max) {
-        return minMaxMeanGenerator(attr, max, "maximum");
+        return realiser.realiseSentence(minMaxMeanGenerator(attr, max, "maximum"));
     }
 
     // Creates an NL phrase for min
     public String minGenerator (String attr, double min) {
-        return minMaxMeanGenerator(attr, min, "minimum");
+        return realiser.realiseSentence(minMaxMeanGenerator(attr, min, "minimum"));
     }
 
     // Creates an NL phrase for average
     public String averageGenerator (String attr, double mean) {
-        return minMaxMeanGenerator(attr, mean, "average");
+        return realiser.realiseSentence(minMaxMeanGenerator(attr, mean, "average"));
     }
 
 
     // Creates an NL phrase for min or max
-    public String minMaxMeanGenerator (String attr, double max, String minMax) {
+    // Your max/min/average step-count is 21,000 steps
+    public SPhraseSpec minMaxMeanGenerator (String attr, double max, String minMax) {
         String[] convertedValues = attributeConverter(attr);
         SPhraseSpec p = nlgFactory.createClause();
         p.setFeature(Feature.PERSON, Person.SECOND);
@@ -55,8 +56,7 @@ public class NLGGenerator {
         subject.addModifier(insightType);
         p.setSubject(subject);
         p.setVerb(verb);
-        String output = realiser.realiseSentence(p);
-        return output;
+        return p;
     }
 
     //converts a double to a String nicely
@@ -237,7 +237,43 @@ public class NLGGenerator {
         return output;
     }
 
-    public void testGenerator () {
+    //Generates statement for today goal
+    public String todayGoalGenerator (String attr, String goal, String current, String highLow) {
+        SPhraseSpec p = nlgFactory.createClause();
+        double dGoal = Double.parseDouble(goal);
+        double dCurrent = Double.parseDouble(current);
+        p = minMaxMeanGenerator(attr, dCurrent, "current");
+        String[] convertedAttributes = attributeConverter(attr);
+        SPhraseSpec p2 = nlgFactory.createClause();
 
+        //If the type of data is something where higher is better (e.g. steps)
+        if(highLow.equals("High")) {
+            NPPhraseSpec subject = nlgFactory.createNounPhrase("your");
+            VPPhraseSpec verb = nlgFactory.createVerbPhrase("goal");
+            NPPhraseSpec object = nlgFactory.createNounPhrase("of " + goal + " " + convertedAttributes[0]);
+            verb.setPostModifier(object);
+            p2.setSubject(subject);
+            p2.setVerb(verb);
+            if (dCurrent < dGoal) {
+                //TODO - STOP IT SAYING GOALS PLURAL
+                subject.setPreModifier("out of");
+            }
+            else {
+               subject.setPreModifier("which is more than");
+            }
+
+        }
+        else if (highLow.equals("Low")) {
+
+        }
+        CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();
+        c.addCoordinate(p);
+        c.addCoordinate(p2);
+        c.setConjunction(",");
+        return realiser.realiseSentence(c);
+    }
+
+    public void testGenerator () {
+        Log.i("SMUSHFIT_TEST", todayGoalGenerator("steps", "10000", "11000", "High"));
     }
 }
