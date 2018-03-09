@@ -237,12 +237,19 @@ public class NLGGenerator {
         return output;
     }
 
+    //Generates statement for current value
+    public String currentGenerator (String attr, String value) {
+        double dValue = Double.parseDouble(value);
+        SPhraseSpec p = minMaxMeanGenerator(attr, dValue, "current");
+        return realiser.realiseSentence(p);
+    }
+
+
     //Generates statement for today goal
     public String todayGoalGenerator (String attr, String goal, String current, String highLow) {
-        SPhraseSpec p = nlgFactory.createClause();
         double dGoal = Double.parseDouble(goal);
         double dCurrent = Double.parseDouble(current);
-        p = minMaxMeanGenerator(attr, dCurrent, "current");
+        SPhraseSpec p = minMaxMeanGenerator(attr, dCurrent, "current");
         String[] convertedAttributes = attributeConverter(attr);
         SPhraseSpec p2 = nlgFactory.createClause();
 
@@ -274,6 +281,16 @@ public class NLGGenerator {
     }
 
     public void testGenerator () {
-        Log.i("SMUSHFIT_TEST", todayGoalGenerator("steps", "10000", "11000", "High"));
+        String[] convertedValues = attributeConverter("productive_min");
+        SPhraseSpec p = nlgFactory.createClause();
+        NPPhraseSpec subject = nlgFactory.createNounPhrase("my");
+        VPPhraseSpec verb = nlgFactory.createVerbPhrase("is");
+        NPPhraseSpec insightType = nlgFactory.createNounPhrase("current " + convertedValues[1] + "?");
+        subject.addModifier(insightType);
+        verb.setPreModifier("What");
+        subject.setPreModifier(verb);
+        p.setSubject(subject);
+        String s = realiser.realiseSentence(p);
+        Log.i("SMUSHFIT_TEST", s);
     }
 }

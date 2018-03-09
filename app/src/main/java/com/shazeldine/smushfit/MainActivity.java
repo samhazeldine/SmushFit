@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupData();
         testInsights();
-        testInsightsTwo();
     }
 
     public void setupData() {
