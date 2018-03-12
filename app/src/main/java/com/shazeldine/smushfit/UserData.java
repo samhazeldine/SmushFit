@@ -3,18 +3,21 @@ package com.shazeldine.smushfit;
 // Created by Samuel Hazeldine on 27/02/2018.
 // Stores all the user data as List of EntriesOfAttributes
 
+import android.app.Application;
+
 import java.util.ArrayList;
 
 public class UserData {
 
-    private ArrayList<EntriesOfAttribute> data;
+    private static ArrayList<EntriesOfAttribute> data = new ArrayList<>();
 
-    public UserData() {
-        data = new ArrayList();
+
+    public static ArrayList<EntriesOfAttribute> getData() {
+        return data;
     }
 
     //Add data to the correct EntriesOfAttribute
-    public void addDataForAttribute(String attribute, Entry entry) {
+    public static void addDataForAttribute(String attribute, Entry entry) {
         Boolean added = false;
         for (EntriesOfAttribute entries: data) {
             if(entries.getAttributeType().equals(attribute)) {
@@ -31,7 +34,7 @@ public class UserData {
 
     //Gets the EntriesOfAttribute for a specific attribute
     //TODO Need to add exception case instead of null
-    public EntriesOfAttribute getEntriesOfAttribute(String attribute) {
+    public static EntriesOfAttribute getEntriesOfAttribute(String attribute) {
         for(EntriesOfAttribute entries : data) {
             if(entries.getAttributeType().equals(attribute)) {
                 return entries;
@@ -39,7 +42,6 @@ public class UserData {
         }
         return null;
     }
-
 
 
 }

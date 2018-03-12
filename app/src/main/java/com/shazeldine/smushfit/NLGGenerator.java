@@ -75,7 +75,7 @@ public class NLGGenerator {
     // [4] object (e.g. step-count) (this is needed with sentences such as "Your step-count is higher"
     //      rather than sentences such as "You sleep more".
     // [5] decrease (e.g. sleep less, listen to less tracks)
-    private String[] attributeConverter (String attr) {
+    public String[] attributeConverter (String attr) {
         String[] temp = new String[6];
         switch (attr) {
             case "sleep":
@@ -112,7 +112,7 @@ public class NLGGenerator {
                 break;
             case "mood":
                 temp[0] = "";
-                temp[1] = "";
+                temp[1] = "mood";
                 temp[2] = "are in a better mood";
                 temp[3] = "you";
                 temp[4] = "";
@@ -174,13 +174,13 @@ public class NLGGenerator {
             return "likely";
         }
         else if (absPearsonLikelihood > 0.55 && absPearsonLikelihood <= 0.7) {
-            return "probable (more likely than not) ";
+            return "likely ";
         }
         else if (absPearsonLikelihood > 0.45 && absPearsonLikelihood <= 0.55) {
-            return "equally likely as not";
+            return "unlikely";
         }
         else if (absPearsonLikelihood > 0.3 && absPearsonLikelihood <= 0.45) {
-            return "possible (less likely than not)";
+            return "unlikely";
         }
         else if (absPearsonLikelihood > 0.1 && absPearsonLikelihood <= 0.3) {
             return "unlikely";
@@ -214,14 +214,28 @@ public class NLGGenerator {
         verb.setPostModifier(pearsonToLikelihood(pearsonLikelihood));
         p2.setVerb(verb);
 
-        //your x will be higher
+
         SPhraseSpec p3 = nlgFactory.createClause();
-        NPPhraseSpec object = nlgFactory.createNounPhrase(attr2Converted[4]);
-        NPPhraseSpec subject3 = nlgFactory.createNounPhrase(attr2Converted[3]);
-        subject3.addModifier(object);
-        p3.setSubject(subject3);
-        p3.setVerb(attr2Converted[positiveNegative]);
-        p3.setFeature(Feature.TENSE, Tense.FUTURE);
+        if (abs(pearsonLikelihood) > 0.55) {
+            //your x will be higher
+            NPPhraseSpec object3 = nlgFactory.createNounPhrase(attr2Converted[4]);
+            NPPhraseSpec subject3 = nlgFactory.createNounPhrase(attr2Converted[3]);
+            subject3.addModifier(object3);
+            p3.setSubject(subject3);
+            p3.setVerb(attr2Converted[positiveNegative]);
+            p3.setFeature(Feature.TENSE, Tense.FUTURE);
+        }
+        else {
+            //your x will be affected
+            NPPhraseSpec subject3 = nlgFactory.createNounPhrase("your");
+            NPPhraseSpec object3 = nlgFactory.createNounPhrase(attr2Converted[1]);
+            VPPhraseSpec verb3 = nlgFactory.createVerbPhrase("be");
+            verb3.setPostModifier("affected");
+            subject3.addModifier(object3);
+            p3.setSubject(subject3);
+            p3.setVerb(verb3);
+           //p3.setFeature(Feature.TENSE, Tense.FUTURE);
+        }
 
         CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();
         CoordinatedPhraseElement b = nlgFactory.createCoordinatedPhrase();
@@ -253,25 +267,30 @@ public class NLGGenerator {
         String[] convertedAttributes = attributeConverter(attr);
         SPhraseSpec p2 = nlgFactory.createClause();
 
+        NPPhraseSpec subject = nlgFactory.createNounPhrase("your");
+        NPPhraseSpec object = nlgFactory.createNounPhrase("goal of " + goal + " " + convertedAttributes[0]);
+        subject.setPostModifier(object);
+        p2.setSubject(subject);
+
         //If the type of data is something where higher is better (e.g. steps)
         if(highLow.equals("High")) {
-            NPPhraseSpec subject = nlgFactory.createNounPhrase("your");
-            VPPhraseSpec verb = nlgFactory.createVerbPhrase("goal");
-            NPPhraseSpec object = nlgFactory.createNounPhrase("of " + goal + " " + convertedAttributes[0]);
-            verb.setPostModifier(object);
-            p2.setSubject(subject);
-            p2.setVerb(verb);
+
             if (dCurrent < dGoal) {
                 //TODO - STOP IT SAYING GOALS PLURAL
                 subject.setPreModifier("out of");
             }
             else {
-               subject.setPreModifier("which is more than");
+               subject.setPreModifier("which means you have met");
             }
 
         }
         else if (highLow.equals("Low")) {
-
+            if (dCurrent < dGoal) {
+                subject.setPreModifier("so you are still on track for");
+            }
+            else {
+                subject.setPreModifier("which means you have unfortunately exceeded");
+            }
         }
         CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();
         c.addCoordinate(p);

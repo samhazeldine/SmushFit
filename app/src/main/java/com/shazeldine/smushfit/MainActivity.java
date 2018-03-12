@@ -17,21 +17,20 @@ public class MainActivity extends AppCompatActivity {
     private UserData userData;
     private String[] attributes =
             {"sleep", "steps", "distracting_min", "events", "mood", "productive_min", "sleep_awakenings", "tracks"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupData();
-        testInsights();
     }
 
     public void setupData() {
-        if (userData == null) {
-            List<String[]> userDataString = readCSV();
-            userData = new UserData();
-            convertToUserData(userDataString);
-        }
+        List<String[]> userDataString = readCSV();
+        convertToUserData(userDataString);
         setGoals();
+        testInsights();
+        testInsightsTwo();
     }
 
     // Reads each line in the CSV and converts it into a 2D array of Strings.
@@ -52,19 +51,19 @@ public class MainActivity extends AppCompatActivity {
     public void convertToUserData(List<String[]> userDataString) {
         for (String[] entryString : userDataString) {
             Entry entry = new Entry(entryString[1], entryString[2]);
-            userData.addDataForAttribute(entryString[0], entry);
+            UserData.addDataForAttribute(entryString[0], entry);
         }
     }
 
     private void setGoals () {
-        userData.getEntriesOfAttribute("sleep").setGoals("480", "High");
-        userData.getEntriesOfAttribute("steps").setGoals("10000", "High");
-        userData.getEntriesOfAttribute("distracting_min").setGoals("60", "Low");
-        userData.getEntriesOfAttribute("events").setGoals("None", "None");
-        userData.getEntriesOfAttribute("mood").setGoals("5", "High");
-        userData.getEntriesOfAttribute("productive_min").setGoals("120", "High");
-        userData.getEntriesOfAttribute("sleep_awakenings").setGoals("1", "Low");
-        userData.getEntriesOfAttribute("tracks").setGoals("None", "None");
+        UserData.getEntriesOfAttribute("sleep").setGoals("480", "High");
+        UserData.getEntriesOfAttribute("steps").setGoals("10000", "High");
+        UserData.getEntriesOfAttribute("distracting_min").setGoals("60", "Low");
+        UserData.getEntriesOfAttribute("events").setGoals("None", "None");
+        UserData.getEntriesOfAttribute("mood").setGoals("5", "High");
+        UserData.getEntriesOfAttribute("productive_min").setGoals("120", "High");
+        UserData.getEntriesOfAttribute("sleep_awakenings").setGoals("1", "Low");
+        UserData.getEntriesOfAttribute("tracks").setGoals("None", "None");
     }
 
     public void testInsights() {
@@ -78,21 +77,28 @@ public class MainActivity extends AppCompatActivity {
         NLGGenerator generator = new NLGGenerator();
         Log.i("SMUSHFIT_TEST", "TEST_BEGIN");
         for (int i = 0; i < attributes.length; i++) {
-            double cor = lookup.findCorrelation(userData, attributes[i], "mood");
-            String output = generator.correlationGenerator(attributes[i], "mood", cor);
-            Log.i("SMUSHFIT_TEST", output);
-            double max = lookup.findMax(userData, attributes[i]);
-            output = generator.maxGenerator(attributes[i], max);
-            Log.i("SMUSHFIT_TEST", output);
+            for (int j = 0; j < attributes.length; j++) {
+                double cor = lookup.findCorrelation(userData, attributes[j] , attributes[i]);
+                String output = generator.correlationGenerator(attributes[j], attributes[i], cor);
+                Log.i("SMUSHFIT_TEST", output);
+            }
+
         }
         generator.testGenerator();
+        String s = generator.todayGoalGenerator("steps", "10000", "12000", "High");
+        Log.i("SMUSHFIT_TEST", s);
+        String s1 = generator.todayGoalGenerator("sleep_awakenings", "4", "5", "Low");
+        Log.i("SMUSHFIT_TEST", s1);
+        String s2 = generator.todayGoalGenerator("steps", "10000", "4522", "High");
+        Log.i("SMUSHFIT_TEST", s2);
+        String s3 = generator.todayGoalGenerator("sleep_awakenings", "4", "1", "Low");
+        Log.i("SMUSHFIT_TEST", s3);
         Log.i("SMUSHFIT_TEST","TEST_END");
-        double testData = lookup.findTrend(userData, "steps");
-        Log.i("SMUSHFIT_TEST", "TREND DATA: " + testData);
     }
 
     public void goToLookupActivity(View view) {
         Intent intent = new Intent(this, LookupActivity.class);
+        intent.putExtra("attributes", attributes);
         startActivity(intent);
     }
 }
