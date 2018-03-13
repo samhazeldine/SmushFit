@@ -17,17 +17,12 @@ import java.util.List;
 
 public class Lookup {
 
-    public String getValueForAttributeAtDate(UserData userData, String attribute, String date) {
-        Entry entry = userData.getEntriesOfAttribute(attribute).getEntryForDate(date);
-        String value = entry.getValue();
-        return value;
-    }
 
     //Gets the non empty values for two attributes and combines into a list of String doubles
     //Naively assumes that dates are the in the same order for each.
-    public List<String[]> getNonEmptyValueOfTwoAttributes(UserData userData, String attr1, String attr2) {
-        EntriesOfAttribute entriesAttr1 = userData.getEntriesOfAttribute(attr1);
-        EntriesOfAttribute entriesAttr2 = userData.getEntriesOfAttribute(attr2);
+    public List<String[]> getNonEmptyValueOfTwoAttributes(String attr1, String attr2) {
+        EntriesOfAttribute entriesAttr1 = UserData.getEntriesOfAttribute(attr1);
+        EntriesOfAttribute entriesAttr2 = UserData.getEntriesOfAttribute(attr2);
         Iterator<Entry> entryIterator1 = entriesAttr1.getEntries().iterator();
         Iterator<Entry> entryIterator2 = entriesAttr2.getEntries().iterator();
         List<String[]> nonEmptyValues = new ArrayList();
@@ -45,8 +40,8 @@ public class Lookup {
     }
 
     //Gets the non empty values for an attribute and combines into a list of Strings
-    public List<String> getNonEmptyValuesOfAttribute(UserData userData, String attr){
-        EntriesOfAttribute entriesAttr1 = userData.getEntriesOfAttribute(attr);
+    public List<String> getNonEmptyValuesOfAttribute(String attr){
+        EntriesOfAttribute entriesAttr1 = UserData.getEntriesOfAttribute(attr);
         Iterator<Entry> entryIterator1 = entriesAttr1.getEntries().iterator();
         List<String> nonEmptyValues = new ArrayList();
         while(entryIterator1.hasNext()) {
@@ -61,8 +56,8 @@ public class Lookup {
 
     // Uses the Apache commons correlation function.
     // Only works when the Attributes are doubles
-    public double findCorrelation (UserData userData, String attr1, String attr2) {
-        List<String[]> nonEmptyValues = getNonEmptyValueOfTwoAttributes(userData, attr1, attr2);
+    public double findCorrelation (String attr1, String attr2) {
+        List<String[]> nonEmptyValues = getNonEmptyValueOfTwoAttributes(attr1, attr2);
         double[][] correlationValues = listOfStringArrayToArray(nonEmptyValues);
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
         double correlationPValue = pearsonsCorrelation.correlation(correlationValues[0], correlationValues[1]);
@@ -70,16 +65,16 @@ public class Lookup {
     }
 
     // Finds current value for insight
-    public double findCurrent (UserData userData, String attr) {
-        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+    public double findCurrent (String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(attr);
         double[] doubleValues = listOfStringToArray(nonEmptyValues);
         double current = doubleValues[doubleValues.length - 1];
         return current;
     }
 
     // Uses Apache Commons library to find mean values for an attribute
-    public double findMean (UserData userData, String attr) {
-        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+    public double findMean (String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(attr);
         double[] doubleValues = listOfStringToArray(nonEmptyValues);
         Mean meanCalc = new Mean();
         double mean = meanCalc.evaluate(doubleValues);
@@ -87,8 +82,8 @@ public class Lookup {
     }
 
     // Uses Apache Commons library to find max value of an attribute
-    public double findMax(UserData userData, String attr) {
-        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+    public double findMax(String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(attr);
         double[] doubleValues = listOfStringToArray(nonEmptyValues);
         Max maxCalc = new Max();
         double max = maxCalc.evaluate(doubleValues);
@@ -96,8 +91,8 @@ public class Lookup {
     }
 
     // Uses Apache Commons library to find min value of an attribute
-    public double findMin(UserData userData, String attr) {
-        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+    public double findMin(String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(attr);
         double[] doubleValues = listOfStringToArray(nonEmptyValues);
         Min minCalc = new Min();
         double max = minCalc.evaluate(doubleValues);
@@ -105,8 +100,8 @@ public class Lookup {
     }
 
     // Uses Apache Commons library to find trend slope
-    public double findTrend(UserData userData, String attr) {
-        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+    public double findTrend(String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(attr);
         double[] doubleValues = listOfStringToArray(nonEmptyValues);
         SimpleRegression regression = new SimpleRegression();
         for (int i=0; i<nonEmptyValues.size(); i++) {

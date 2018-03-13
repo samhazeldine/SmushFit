@@ -15,6 +15,7 @@ import java.util.List;
 public class LookupActivity extends AppCompatActivity {
     private NLGGenerator generator;
     private Lookup lookup;
+    private String[] attributes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,14 +27,15 @@ public class LookupActivity extends AppCompatActivity {
 
     private void createSpinner() {
         //Creating insight spinner
-        String[] attributes = getIntent().getStringArrayExtra("attributes");
+        attributes = getIntent().getStringArrayExtra("attributes");
+        String[] attributesConverted = new String[attributes.length];
         for(int i=0; i < attributes.length; i++) {
             String s = generator.attributeConverter(attributes[i])[1];
-            attributes[i] = s;
+            attributesConverted[i] = s;
             //TODO Need to add question mark without NULL being given.
         }
         Spinner spinner = (Spinner) findViewById(R.id.insightSpinner);
-        List<String> spinnerData = Arrays.asList(attributes);
+        List<String> spinnerData = Arrays.asList(attributesConverted);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerData);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -52,12 +54,36 @@ public class LookupActivity extends AppCompatActivity {
         Spinner spinnerCurMaxMin = (Spinner) findViewById(R.id.currentSpinner);
         String type = spinnerCurMaxMin.getSelectedItem().toString();
         Spinner spinnerInsight = (Spinner) findViewById(R.id.insightSpinner);
-        String insight = spinnerInsight.getSelectedItem().toString();
-        String generatedStatement;
+        int insightPos = spinnerInsight.getSelectedItemPosition();
+        String generatedStatement = "";
+        String selectedInsight = attributes[insightPos];
+        double value;
         switch(type) {
             case "current":
+                value = lookup.findCurrent(selectedInsight);
+                generatedStatement = generator.currentGenerator(selectedInsight, value);
+                break;
+
+            case "maximum":
+                value = lookup.findMax(selectedInsight);
+                generatedStatement = generator.maxGenerator(selectedInsight, value);
+                break;
+
+            case "minimum":
+                value = lookup.findMin(selectedInsight);
+                generatedStatement = generator.minGenerator(selectedInsight, value);
+                break;
+
+            case "average":
+                value = lookup.findMean(selectedInsight);
+                generatedStatement = generator.averageGenerator(selectedInsight, value);
+                break;
+            case "goal":
+                value = 0.0;
+                generatedStatement = generator.todayGoalGenerator(selectedInsight, "0", "0", "High");
+                break;
 
         }
-
+        Log.i("SMUSHFIT_SPINNER_TEST", "The generated statement is: " + generatedStatement);
     }
 }

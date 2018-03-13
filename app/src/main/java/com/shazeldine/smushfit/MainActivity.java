@@ -14,7 +14,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private UserData userData;
     private String[] attributes =
             {"sleep", "steps", "distracting_min", "events", "mood", "productive_min", "sleep_awakenings", "tracks"};
 
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("SMUSHFIT_TEST", "TEST_BEGIN");
         for (int i = 0; i < attributes.length; i++) {
             for (int j = 0; j < attributes.length; j++) {
-                double cor = lookup.findCorrelation(userData, attributes[j] , attributes[i]);
+                double cor = lookup.findCorrelation(attributes[j] , attributes[i]);
                 String output = generator.correlationGenerator(attributes[j], attributes[i], cor);
                 Log.i("SMUSHFIT_TEST", output);
             }

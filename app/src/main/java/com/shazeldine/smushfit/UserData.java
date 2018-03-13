@@ -11,14 +11,8 @@ public class UserData {
 
     private static ArrayList<EntriesOfAttribute> data = new ArrayList<>();
 
-    private static UserData userData = new UserData();
-
     public static ArrayList<EntriesOfAttribute> getData() {
         return data;
-    }
-
-    public static UserData getInstance() {
-        return userData;
     }
 
     //Add data to the correct EntriesOfAttribute

@@ -257,6 +257,11 @@ public class NLGGenerator {
         SPhraseSpec p = minMaxMeanGenerator(attr, dValue, "current");
         return realiser.realiseSentence(p);
     }
+    //Overloaded - can handle double or String
+    public String currentGenerator(String attr, double value) {
+        SPhraseSpec p = minMaxMeanGenerator(attr, value, "current");
+        return realiser.realiseSentence(p);
+    }
 
 
     //Generates statement for today goal
