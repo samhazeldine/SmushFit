@@ -51,7 +51,7 @@ public class NLGGenerator {
         String maxAttr = minMax + " " + convertedValues[1];
         NPPhraseSpec insightType = nlgFactory.createNounPhrase(maxAttr);
         VPPhraseSpec verb = nlgFactory.createVerbPhrase("be");
-        NPPhraseSpec number = nlgFactory.createNounPhrase(doubleToString(max) + " " + convertedValues[0]);
+        NPPhraseSpec number = nlgFactory.createNounPhrase(doubleToString(max, attr) + " " + convertedValues[0]);
         verb.addComplement(number);
         subject.addModifier(insightType);
         p.setSubject(subject);
@@ -60,8 +60,25 @@ public class NLGGenerator {
     }
 
     //converts a double to a String nicely
-    public String doubleToString(double d) {
-        if(d == (long) d)
+    public String doubleToString(double d, String attr) {
+        if(attr.equals("mood")) {
+            if (d == 5.0) {
+                return "perfect";
+            }
+            else if (d == 4.0) {
+                return "good";
+            }
+            else if (d == 3.0) {
+                return "okay";
+            }
+            else if (d == 2.0) {
+                return "bad";
+            }
+            else {
+                return "terrible";
+            }
+        }
+        else if(d == (long) d)
             return String.format("%d",(long)d);
         else
             return String.format("%s",d);
@@ -79,7 +96,7 @@ public class NLGGenerator {
         String[] temp = new String[6];
         switch (attr) {
             case "sleep":
-                temp[0] = "hours";
+                temp[0] = "minutes";
                 temp[1] = "amount of sleep";
                 temp[2] = "sleep more";
                 temp[3] = "you";
