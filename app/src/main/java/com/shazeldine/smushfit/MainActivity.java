@@ -14,8 +14,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String[] attributes =
-            {"sleep", "steps", "distracting_min", "events", "mood", "productive_min", "sleep_awakenings", "tracks"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +73,10 @@ public class MainActivity extends AppCompatActivity {
         Lookup lookup = new Lookup();
         NLGGenerator generator = new NLGGenerator();
         Log.i("SMUSHFIT_TEST", "TEST_BEGIN");
-        for (int i = 0; i < attributes.length; i++) {
-            for (int j = 0; j < attributes.length; j++) {
-                double cor = lookup.findCorrelation(attributes[j] , attributes[i]);
-                String output = generator.correlationGenerator(attributes[j], attributes[i], cor);
+        for (int i = 0; i < UserData.getAttributes().length; i++) {
+            for (int j = 0; j < UserData.getAttributes().length; j++) {
+                double cor = lookup.findCorrelation(UserData.getAttributes()[j] , UserData.getAttributes()[i]);
+                String output = generator.correlationGenerator(UserData.getAttributes()[j], UserData.getAttributes()[i], cor);
                 Log.i("SMUSHFIT_TEST", output);
             }
 
@@ -97,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToLookupActivity(View view) {
         Intent intent = new Intent(this, LookupActivity.class);
-        intent.putExtra("attributes", attributes);
         startActivity(intent);
     }
 }

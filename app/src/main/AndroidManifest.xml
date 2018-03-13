@@ -16,11 +16,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LookupActivity"></activity>
+        <activity android:name=".LookupActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <activity android:name=".DisplayLookupResultActivity"
+                  android:parentActivityName=".LookupActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LookupActivity" />
+        </activity>
     </application>
 
 </manifest>

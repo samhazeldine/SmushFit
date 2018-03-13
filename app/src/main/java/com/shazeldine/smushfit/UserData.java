@@ -11,9 +11,17 @@ public class UserData {
 
     private static ArrayList<EntriesOfAttribute> data = new ArrayList<>();
 
+    private static String[] attributes =
+            {"sleep", "steps", "distracting_min", "events", "mood", "productive_min", "sleep_awakenings", "tracks"};
+
     public static ArrayList<EntriesOfAttribute> getData() {
         return data;
     }
+
+    public static String[] getAttributes() {
+        return attributes;
+    }
+
 
     //Add data to the correct EntriesOfAttribute
     public static void addDataForAttribute(String attribute, Entry entry) {

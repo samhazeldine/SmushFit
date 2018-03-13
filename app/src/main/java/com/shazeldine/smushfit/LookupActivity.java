@@ -16,6 +16,7 @@ public class LookupActivity extends AppCompatActivity {
     private NLGGenerator generator;
     private Lookup lookup;
     private String[] attributes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +24,12 @@ public class LookupActivity extends AppCompatActivity {
         generator = new NLGGenerator();
         lookup = new Lookup();
         createSpinner();
+
     }
 
     private void createSpinner() {
         //Creating insight spinner
-        attributes = getIntent().getStringArrayExtra("attributes");
+        attributes = UserData.getAttributes();
         String[] attributesConverted = new String[attributes.length];
         for(int i=0; i < attributes.length; i++) {
             String s = generator.attributeConverter(attributes[i])[1];
@@ -50,7 +52,7 @@ public class LookupActivity extends AppCompatActivity {
     }
 
     public void findLookup(View view) {
-        //Intent intent = new Intent(this, DisplayLookupResultActivity.class);
+        Intent intent = new Intent(this, DisplayLookupResultActivity.class);
         Spinner spinnerCurMaxMin = (Spinner) findViewById(R.id.currentSpinner);
         String type = spinnerCurMaxMin.getSelectedItem().toString();
         Spinner spinnerInsight = (Spinner) findViewById(R.id.insightSpinner);
@@ -84,6 +86,8 @@ public class LookupActivity extends AppCompatActivity {
                 break;
 
         }
+        intent.putExtra("GENERATED_STATEMENT", generatedStatement);
         Log.i("SMUSHFIT_SPINNER_TEST", "The generated statement is: " + generatedStatement);
+        startActivity(intent);
     }
 }
