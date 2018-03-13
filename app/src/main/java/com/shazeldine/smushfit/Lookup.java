@@ -69,6 +69,13 @@ public class Lookup {
         return correlationPValue;
     }
 
+    // Finds current value for insight
+    public double findCurrent (UserData userData, String attr) {
+        List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(userData, attr);
+        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        double current = doubleValues[doubleValues.length - 1];
+        return current;
+    }
 
     // Uses Apache Commons library to find mean values for an attribute
     public double findMean (UserData userData, String attr) {
