@@ -26,7 +26,7 @@ public class LookupSliderAdapter extends FragmentPagerAdapter {
             case 0:
                 return LookupActivity.newInstance();
             case 1:
-                return LookupActivity.newInstance();
+                return CorrelationLookup.newInstanceTwo();
             default:
                 return null;
         }
