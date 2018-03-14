@@ -288,8 +288,12 @@ public class NLGGenerator {
 
     //Generates statement for today goal
     public String todayGoalGenerator (String attr, double dGoal, double dCurrent, String highLow) {
-        SPhraseSpec p = minMaxMeanGenerator(attr, dCurrent, "current");
         String[] convertedAttributes = attributeConverter(attr);
+        if(highLow.equals("None")) {
+            NLGElement s1 = nlgFactory.createSentence("You have no goal set for " + convertedAttributes[1]);
+            return realiser.realiseSentence(s1);
+        }
+        SPhraseSpec p = minMaxMeanGenerator(attr, dCurrent, "current");
         SPhraseSpec p2 = nlgFactory.createClause();
 
         NPPhraseSpec subject = nlgFactory.createNounPhrase("your");

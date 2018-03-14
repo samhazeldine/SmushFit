@@ -14,7 +14,9 @@ public class UserData {
     private static String[] attributes =
             {"sleep", "steps", "distracting_min", "events", "mood", "productive_min", "sleep_awakenings", "tracks"};
     private static double[] goals =
-            {480.0, 10000.0, 30.0, -1.0, 5.0, 120.0, 2.0, 30.0};
+            {480.0, 10000.0, 30.0, -1.0, 5.0, 120.0, 2.0, -1};
+    private static String[] goalAims =
+            {"High", "High", "Low", "None", "High", "High", "Low", "None"};
 
     public static ArrayList<EntriesOfAttribute> getData() {
         return data;
@@ -33,6 +35,16 @@ public class UserData {
             }
         }
         return -1;
+    }
+
+    //Goal aim for a specific attribute.
+    public static String getGoalAimForAttribute(String attr) {
+        for (int i=0; i < attributes.length; i ++) {
+            if(attr.equals(attributes[i])) {
+                return goalAims[i];
+            }
+        }
+        return "None";
     }
 
     //Add data to the correct EntriesOfAttribute

@@ -101,8 +101,9 @@ public class LookupActivity extends Fragment implements View.OnClickListener {
                 break;
             case "goal for":
                 value = UserData.getGoalForAttribute(selectedInsight);
+                String goalAim = UserData.getGoalAimForAttribute(selectedInsight);
                 double currentValue = lookup.findCurrent(selectedInsight);
-                generatedStatement = generator.todayGoalGenerator(selectedInsight, value, currentValue, "High");
+                generatedStatement = generator.todayGoalGenerator(selectedInsight, value, currentValue, goalAim);
                 break;
 
         }

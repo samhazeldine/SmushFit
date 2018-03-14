@@ -36,6 +36,8 @@ public class EntriesOfAttribute {
         return goal;
     }
 
+    public String getGoalAim() { return goalAim;};
+
     public void setGoals(String goal, String goalAim) {
         this.goal = goal;
         this.goalAim = goalAim;

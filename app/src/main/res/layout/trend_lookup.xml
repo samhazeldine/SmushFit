@@ -4,47 +4,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.shazeldine.smushfit.LookupActivity">
+    tools:context="com.shazeldine.smushfit.TrendLookup">
 
     <TextView
-        android:id="@+id/lookup1"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:fontFamily="sans-serif"
-        android:text="What is my"
+        android:text="How has my"
         android:textColor="@android:color/black"
         android:textSize="24sp"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/insightSpinner"
+        android:id="@+id/trendSpinner"
         android:layout_width="352dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currentSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <Spinner
-        android:id="@+id/currentSpinner"
-        android:layout_width="352dp"
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:text="changed over time?"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lookup1" />
+        app:layout_constraintTop_toBottomOf="@+id/trendSpinner" />
 
     <Button
-        android:id="@+id/lookupButton"
+        android:id="@+id/trendButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
-        android:onClick="onClick"
         android:text="Go"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
