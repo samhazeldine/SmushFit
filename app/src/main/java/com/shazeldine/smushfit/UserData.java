@@ -13,6 +13,8 @@ public class UserData {
 
     private static String[] attributes =
             {"sleep", "steps", "distracting_min", "events", "mood", "productive_min", "sleep_awakenings", "tracks"};
+    private static double[] goals =
+            {480.0, 10000.0, 30.0, -1.0, 5.0, 120.0, 2.0, 30.0};
 
     public static ArrayList<EntriesOfAttribute> getData() {
         return data;
@@ -22,6 +24,16 @@ public class UserData {
         return attributes;
     }
 
+    //Goals for a specific attribute.
+    //A goal of -1 means no goal is set.
+    public static double getGoalForAttribute(String attr) {
+        for (int i=0; i < attributes.length; i ++) {
+            if(attr.equals(attributes[i])) {
+                return goals[i];
+            }
+        }
+        return -1;
+    }
 
     //Add data to the correct EntriesOfAttribute
     public static void addDataForAttribute(String attribute, Entry entry) {

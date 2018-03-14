@@ -280,17 +280,20 @@ public class NLGGenerator {
         return realiser.realiseSentence(p);
     }
 
-
     //Generates statement for today goal
     public String todayGoalGenerator (String attr, String goal, String current, String highLow) {
-        double dGoal = Double.parseDouble(goal);
-        double dCurrent = Double.parseDouble(current);
+        String s = this.todayGoalGenerator(attr, Double.parseDouble(goal), Double.parseDouble(current), highLow);
+        return s;
+    }
+
+    //Generates statement for today goal
+    public String todayGoalGenerator (String attr, double dGoal, double dCurrent, String highLow) {
         SPhraseSpec p = minMaxMeanGenerator(attr, dCurrent, "current");
         String[] convertedAttributes = attributeConverter(attr);
         SPhraseSpec p2 = nlgFactory.createClause();
 
         NPPhraseSpec subject = nlgFactory.createNounPhrase("your");
-        NPPhraseSpec object = nlgFactory.createNounPhrase("goal of " + goal + " " + convertedAttributes[0]);
+        NPPhraseSpec object = nlgFactory.createNounPhrase("goal of " + doubleToString(dGoal, attr) + " " + convertedAttributes[0]);
         subject.setPostModifier(object);
         p2.setSubject(subject);
 

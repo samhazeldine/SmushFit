@@ -22,12 +22,18 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".DisplayLookupResultActivity"
-                  android:parentActivityName=".LookupActivity">
+        <activity
+            android:name=".DisplayLookupResultActivity"
+            android:parentActivityName=".LookupActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".LookupActivity" />
         </activity>
+        <activity android:name=".LookupActivityFragmentSimple" />
+        <activity
+            android:name=".LookupSlider"
+            android:label="@string/title_activity_lookup_slider"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
