@@ -10,7 +10,7 @@ import java.util.List;
 public class EntriesOfAttribute {
     private String attributeType;
     private List<Entry> entries;
-    private String goal;
+    private double goal;
     private String goalAim;
 
     public EntriesOfAttribute (String attributeType) {
@@ -32,13 +32,13 @@ public class EntriesOfAttribute {
         return attributeType;
     }
 
-    public String getGoal() {
+    public double getGoal() {
         return goal;
     }
 
     public String getGoalAim() { return goalAim;};
 
-    public void setGoals(String goal, String goalAim) {
+    public void setGoals(double goal, String goalAim) {
         this.goal = goal;
         this.goalAim = goalAim;
     }

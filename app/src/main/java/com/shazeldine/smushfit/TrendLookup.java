@@ -64,10 +64,11 @@ public class TrendLookup extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(getActivity(), DisplayLookupResultActivity.class);
-        Spinner correlationSpinnerOne = (Spinner) getActivity().findViewById(R.id.correlationSpinnerOne);
-        int spinnerOnePos = correlationSpinnerOne.getSelectedItemPosition();
-        String attr1 = attributes[spinnerOnePos];
-        String generatedStatement = "";
+        Spinner trendSpinner = (Spinner) getActivity().findViewById(R.id.trendSpinner);
+        int spinnerPos = trendSpinner.getSelectedItemPosition();
+        String attr1 = attributes[spinnerPos];
+        double slope = lookup.findTrend(attr1);
+        String generatedStatement = generator.trendGenerator(attr1, slope);
         intent.putExtra("GENERATED_STATEMENT", generatedStatement);
         Log.i("SMUSHFIT_SPINNER_TEST", "The generated statement is: " + generatedStatement);
         startActivity(intent);

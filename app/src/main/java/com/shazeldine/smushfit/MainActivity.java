@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.opencsv.CSVReader;
 import java.io.BufferedReader;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         convertToUserData(userDataString);
         setGoals();
         testInsights();
-        testInsightsTwo();
+        //testInsightsTwo();
     }
 
     // Reads each line in the CSV and converts it into a 2D array of Strings.
@@ -53,20 +54,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setGoals () {
-        UserData.getEntriesOfAttribute("sleep").setGoals("480", "High");
-        UserData.getEntriesOfAttribute("steps").setGoals("10000", "High");
-        UserData.getEntriesOfAttribute("distracting_min").setGoals("60", "Low");
-        UserData.getEntriesOfAttribute("events").setGoals("None", "None");
-        UserData.getEntriesOfAttribute("mood").setGoals("5", "High");
-        UserData.getEntriesOfAttribute("productive_min").setGoals("120", "High");
-        UserData.getEntriesOfAttribute("sleep_awakenings").setGoals("1", "Low");
-        UserData.getEntriesOfAttribute("tracks").setGoals("None", "None");
+        UserData.getEntriesOfAttribute("sleep").setGoals(480, "High");
+        UserData.getEntriesOfAttribute("steps").setGoals(10000, "High");
+        UserData.getEntriesOfAttribute("distracting_min").setGoals(30, "Low");
+        UserData.getEntriesOfAttribute("events").setGoals(-1, "None");
+        UserData.getEntriesOfAttribute("mood").setGoals(5, "High");
+        UserData.getEntriesOfAttribute("productive_min").setGoals(120, "High");
+        UserData.getEntriesOfAttribute("sleep_awakenings").setGoals(2, "Low");
+        UserData.getEntriesOfAttribute("tracks").setGoals(-1, "None");
     }
 
     public void testInsights() {
         Lookup lookup = new Lookup();
         NLGGenerator generator = new NLGGenerator();
-        generator.testGenerator();
+        String s = generator.trendGenerator("steps", lookup.findTrend("steps"));
+        Log.i("SMUSHFIT_TEST", s);
     }
 
     private void testInsightsTwo () {

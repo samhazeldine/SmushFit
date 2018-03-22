@@ -290,6 +290,7 @@ public class NLGGenerator {
     //Generates statement for today goal
     public String todayGoalGenerator (String attr, double dGoal, double dCurrent, String highLow) {
         String[] convertedAttributes = attributeConverter(attr);
+        //No goal set
         if(highLow.equals("None")) {
             NLGElement s1 = nlgFactory.createSentence("You have no goal set for " + convertedAttributes[1]);
             return realiser.realiseSentence(s1);
@@ -314,6 +315,7 @@ public class NLGGenerator {
             }
 
         }
+        //If the type of data is something where lower is better (e.g. awakenings in the night)
         else if (highLow.equals("Low")) {
             if (dCurrent < dGoal) {
                 subject.setPreModifier("so you are still on track for");
@@ -329,6 +331,42 @@ public class NLGGenerator {
         return realiser.realiseSentence(c);
     }
 
+    //Generates speech for trend
+    public String trendGenerator(String attr, double slope) {
+        String[] convertedValues = attributeConverter(attr);
+
+        //For time frame
+        SPhraseSpec pTimeFrame = nlgFactory.createClause();
+        NPPhraseSpec subjectTimeFrame = nlgFactory.createNounPhrase("you");
+        subjectTimeFrame.setPreModifier("Since");
+        subjectTimeFrame.setPostModifier("starting tracking");
+        pTimeFrame.setSubject(subjectTimeFrame);
+
+        //Increase/decrease
+        SPhraseSpec p = nlgFactory.createClause();
+        p.setFeature(Feature.PERSON, Person.SECOND);
+        NPPhraseSpec subject = nlgFactory.createNounPhrase("your");
+        NPPhraseSpec object = nlgFactory.createNounPhrase(convertedValues[1]);
+        if (slope < 0) {
+            object.setPostModifier("has decreased");
+        }
+        else if (slope > 0) {
+            object.setPostModifier("has increased");
+        }
+        else {
+            object.setPostModifier("has remained constant");
+        }
+        p.setSubject(subject);
+        p.setObject(object);
+        CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();
+        c.addCoordinate(pTimeFrame);
+        c.addCoordinate(p);
+        c.setConjunction(",");
+        String output = realiser.realiseSentence(c);
+        return output;
+    }
+
+    //Just used for tests
     public void testGenerator () {
         String[] convertedValues = attributeConverter("productive_min");
         SPhraseSpec p = nlgFactory.createClause();
