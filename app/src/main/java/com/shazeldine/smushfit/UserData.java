@@ -13,8 +13,8 @@ public class UserData {
 
     private static String[] attributes =
             {"sleep", "steps", "distracting_min", "events", "mood", "productive_min", "sleep_awakenings", "tracks"};
-    private static double[] goals =
-            {480.0, 10000.0, 30.0, -1.0, 5.0, 120.0, 2.0, -1};
+    private static String[] goals =
+            {"480", "10000", "30", "None", "5.0", "120.0", "2.0", "None"};
     private static String[] goalAims =
             {"High", "High", "Low", "None", "High", "High", "Low", "None"};
 

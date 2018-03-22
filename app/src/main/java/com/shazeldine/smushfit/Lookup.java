@@ -1,7 +1,6 @@
 package com.shazeldine.smushfit;
 
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Max;
 import org.apache.commons.math3.stat.descriptive.rank.Min;
@@ -58,7 +57,7 @@ public class Lookup {
     // Only works when the Attributes are doubles
     public double findCorrelation (String attr1, String attr2) {
         List<String[]> nonEmptyValues = getNonEmptyValueOfTwoAttributes(attr1, attr2);
-        double[][] correlationValues = listOfStringArrayToArray(nonEmptyValues);
+        double[][] correlationValues = listOfStringArrayToDoubleArray(nonEmptyValues);
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
         double correlationPValue = pearsonsCorrelation.correlation(correlationValues[0], correlationValues[1]);
         return correlationPValue;
@@ -67,7 +66,7 @@ public class Lookup {
     // Finds current value for insight
     public double findCurrent (String attr) {
         List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(attr);
-        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        double[] doubleValues = listOfStringToDoubleArray(nonEmptyValues);
         double current = doubleValues[doubleValues.length - 1];
         return current;
     }
@@ -75,7 +74,7 @@ public class Lookup {
     // Uses Apache Commons library to find mean values for an attribute
     public double findMean (String attr) {
         List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(attr);
-        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        double[] doubleValues = listOfStringToDoubleArray(nonEmptyValues);
         Mean meanCalc = new Mean();
         double mean = meanCalc.evaluate(doubleValues);
         return mean;
@@ -84,7 +83,7 @@ public class Lookup {
     // Uses Apache Commons library to find max value of an attribute
     public double findMax(String attr) {
         List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(attr);
-        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        double[] doubleValues = listOfStringToDoubleArray(nonEmptyValues);
         Max maxCalc = new Max();
         double max = maxCalc.evaluate(doubleValues);
         return max;
@@ -93,7 +92,7 @@ public class Lookup {
     // Uses Apache Commons library to find min value of an attribute
     public double findMin(String attr) {
         List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(attr);
-        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        double[] doubleValues = listOfStringToDoubleArray(nonEmptyValues);
         Min minCalc = new Min();
         double max = minCalc.evaluate(doubleValues);
         return max;
@@ -102,7 +101,7 @@ public class Lookup {
     // Uses Apache Commons library to find trend slope
     public double findTrend(String attr) {
         List<String> nonEmptyValues = getNonEmptyValuesOfAttribute(attr);
-        double[] doubleValues = listOfStringToArray(nonEmptyValues);
+        double[] doubleValues = listOfStringToDoubleArray(nonEmptyValues);
         SimpleRegression regression = new SimpleRegression();
         for (int i=0; i<nonEmptyValues.size(); i++) {
            regression.addData(i, doubleValues[i]);
@@ -112,9 +111,9 @@ public class Lookup {
     }
 
 
-    // Converts a list of String arrays into an array of doubles
+    // Converts a list of String arrays into a 2D array of doubles
     // TODO - add exceptions
-    private double[][] listOfStringArrayToArray(List<String[]> nonEmptyValues) {
+    private double[][] listOfStringArrayToDoubleArray(List<String[]> nonEmptyValues) {
         double[][] doubleValues = new double[2][nonEmptyValues.size()];
         for(int i = 0; i < nonEmptyValues.size(); i++) {
             String[] values = nonEmptyValues.get(i);
@@ -124,9 +123,9 @@ public class Lookup {
         return doubleValues;
     }
 
-    // Converts a list of String arrays into an array of doubles
+    // Converts a list of Strings into an array of doubles
     // TODO - add exceptions
-    private double[] listOfStringToArray(List<String> nonEmptyValues) {
+    private double[] listOfStringToDoubleArray(List<String> nonEmptyValues) {
         double[] doubleValues = new double[nonEmptyValues.size()];
         for(int i = 0; i < nonEmptyValues.size(); i++) {
             String value = nonEmptyValues.get(i);
