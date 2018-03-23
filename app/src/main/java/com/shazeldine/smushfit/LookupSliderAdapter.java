@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 
 public class LookupSliderAdapter extends FragmentPagerAdapter {
-    private static int NUM_ITEMS = 3;
+    private static int NUM_ITEMS = 4;
 
     public LookupSliderAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
@@ -28,6 +28,8 @@ public class LookupSliderAdapter extends FragmentPagerAdapter {
             case 1:
                 return CorrelationLookup.newInstanceTwo();
             case 2:
+                return GeneralCorrelationLookup.generalCorrelationLookupInstance();
+            case 3:
                 return TrendLookup.newInstanceThree();
             default:
                 return null;
@@ -42,6 +44,8 @@ public class LookupSliderAdapter extends FragmentPagerAdapter {
             case 1:
                 return "Correlation";
             case 2:
+                return "General Correlation";
+            case 3:
                 return "Trend";
             default:
                 return "LOL";

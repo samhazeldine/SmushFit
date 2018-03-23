@@ -161,7 +161,13 @@ public class NLGGenerator {
                 temp[4] = "";
                 temp[5] = "listen to less music";
                 break;
-
+            default:
+                temp[0] = "";
+                temp[1] = "numbers of tests";
+                temp[2] = "take more tests";
+                temp[3] = "you";
+                temp[4] = "";
+                temp[5] = "take less tests";
         }
         return temp;
     }
@@ -212,18 +218,24 @@ public class NLGGenerator {
         }
     }
 
+    // Generates phrase "when you X"
+    public SPhraseSpec whenYouX(String attr) {
+        SPhraseSpec p = nlgFactory.createClause();
+        String[] attrConverted = attributeConverter(attr);
+        NPPhraseSpec subject = nlgFactory.createNounPhrase(attrConverted[3]);
+        subject.addModifier(attrConverted[4]);
+        p.setSubject(subject);
+        p.setFrontModifier("when");
+        p.setVerb(attrConverted[2]);
+        return p;
+    }
+
     // Generates the statements for correlation
     public String correlationGenerator (String attr1, String attr2, double pearsonLikelihood) {
         int positiveNegative = doubleToPositiveNegative(pearsonLikelihood);
-        //On days when you X
-        SPhraseSpec p = nlgFactory.createClause();
-        String[] attr1Converted = attributeConverter(attr1);
-        NPPhraseSpec subject = nlgFactory.createNounPhrase(attr1Converted[3]);
-        subject.addModifier(attr1Converted[4]);
-        p.setSubject(subject);
-        p.setFrontModifier("when");
-        p.setVerb(attr1Converted[2]);
 
+        //When you X
+        SPhraseSpec p = whenYouX(attr1);
 
         //it is likely
         SPhraseSpec p2 = nlgFactory.createClause();
@@ -368,8 +380,17 @@ public class NLGGenerator {
         return output;
     }
 
-    public String likelyCorrelationGenerator(List<CorrelationIdentifier> correlationIdentifiers) {
-        return "";
+    public String likelyCorrelationGenerator(String attr, List<CorrelationIdentifier> correlationIdentifiers) {
+        String[] convertedAttributes = attributeConverter(attr);
+        if(correlationIdentifiers.size() == 0) {
+            NLGElement s = nlgFactory.createSentence("Nothing is likely to affect your " + convertedAttributes[1]);
+            return realiser.realiseSentence(s);
+        }
+        else {
+            SPhraseSpec p = whenYouX(attr);
+            String output = realiser.realiseSentence(p);
+            return output;
+        }
     }
 
 

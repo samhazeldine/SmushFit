@@ -12,7 +12,7 @@ public class UserData {
     private static ArrayList<EntriesOfAttribute> data = new ArrayList<>();
 
     private static String[] attributes =
-            {"sleep", "steps", "distracting_min", "events", "mood", "productive_min", "sleep_awakenings", "tracks"};
+            {"sleep", "steps", "distracting_min", "events", "mood", "productive_min", "sleep_awakenings", "tracks", "test1", "test2", "test3", "test4"};
 
     public static ArrayList<EntriesOfAttribute> getData() {
         return data;

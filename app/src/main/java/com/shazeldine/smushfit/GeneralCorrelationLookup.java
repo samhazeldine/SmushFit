@@ -51,11 +51,14 @@ public class GeneralCorrelationLookup extends Fragment implements View.OnClickLi
         for(int i=0; i < attributes.length; i++) {
             String s = generator.attributeConverter(attributes[i])[1];
             attributesConverted[i] = s;
-            //TODO Need to add question mark without NULL being given.
+            Log.i("SMUSHFIT_TEST", "LOOP " + i);
         }
         Spinner spinner = (Spinner) view.findViewById(R.id.generalCorrelationSpinner);
-        List<String> spinnerDataOne = Arrays.asList(attributesConverted);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, spinnerDataOne);
+        List<String> spinnerData = Arrays.asList(attributesConverted);
+        for(String s : spinnerData){
+            Log.i("SMUSHFIT_TEST", "Spinner Data: " + s);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, spinnerData);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
     }
@@ -66,9 +69,10 @@ public class GeneralCorrelationLookup extends Fragment implements View.OnClickLi
         Spinner generalCorrelationSpinner = (Spinner) getActivity().findViewById(R.id.generalCorrelationSpinner);
         int spinnerOnePos = generalCorrelationSpinner.getSelectedItemPosition();
         String attr1 = attributes[spinnerOnePos];
+
         //Get values
         //Get strings
-        String generatedStatement = "";
+        String generatedStatement = generator.likelyCorrelationGenerator(attr1, lookup.findLikelyCorrelation(attr1));
         intent.putExtra("GENERATED_STATEMENT", generatedStatement);
         Log.i("SMUSHFIT_SPINNER_TEST", "The generated statement is: " + generatedStatement);
         startActivity(intent);
