@@ -3,6 +3,7 @@ package com.shazeldine.smushfit;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import simplenlg.framework.*;
@@ -230,31 +231,72 @@ public class NLGGenerator {
         return p;
     }
 
+    // "it is [likelihood] you will x more, y more, and z more.
+    public SPhraseSpec correlationSingleLikelihood(List<CorrelationIdentifier> correlationIdentifiers) {
+        //Three separate lists depending on likelihood
+        List<CorrelationIdentifier> extremelyLikelyCorrelations = new ArrayList<>();
+        List<CorrelationIdentifier> veryLikelyCorrelations = new ArrayList<>();
+        List<CorrelationIdentifier> likelyCorrelations = new ArrayList<>();
+        for(CorrelationIdentifier id : correlationIdentifiers) {
+            String likelihood = pearsonToLikelihood(id.getCorrelationValue());
+            if(likelihood.equals("extremely likely")) {
+                extremelyLikelyCorrelations.add(id);
+            }
+            else if(likelihood.equals("very likely")) {
+                veryLikelyCorrelations.add(id);
+            }
+            else {
+                likelyCorrelations.add(id);
+            }
+        }
+
+        //Generate clause for each
+        SPhraseSpec pExtremely = nlgFactory.createClause();
+        SPhraseSpec pVery = nlgFactory.createClause();
+        SPhraseSpec pLikely = nlgFactory.createClause();
+
+        return pExtremely;
+        //TODO need to decide on the direction. I think I fucked it.
+    }
+
+    //Generates "your x will be higher"
+    private SPhraseSpec yourXWillBeHigher(String attr, double pearsonLikelihood) {
+        int positiveNegative = doubleToPositiveNegative(pearsonLikelihood);
+        String[] attrConverted = attributeConverter(attr);
+        SPhraseSpec p = nlgFactory.createClause();
+        NPPhraseSpec object3 = nlgFactory.createNounPhrase(attrConverted[4]);
+        NPPhraseSpec subject3 = nlgFactory.createNounPhrase(attrConverted[3]);
+        subject3.addModifier(object3);
+        p.setSubject(subject3);
+        p.setVerb(attrConverted[positiveNegative]);
+        p.setFeature(Feature.TENSE, Tense.FUTURE);
+        return p;
+    }
+
+    //Geneartes "it is [likelihood]
+    private SPhraseSpec itIsLikelihood(double pearsonLikelihood) {
+        SPhraseSpec p = nlgFactory.createClause();
+        p.setSubject("it");
+        VPPhraseSpec verb = nlgFactory.createVerbPhrase("be");
+        verb.setPostModifier(pearsonToLikelihood(pearsonLikelihood));
+        p.setVerb(verb);
+        return p;
+    }
+
     // Generates the statements for correlation
     public String correlationGenerator (String attr1, String attr2, double pearsonLikelihood) {
-        int positiveNegative = doubleToPositiveNegative(pearsonLikelihood);
+        String[] attr2Converted = attributeConverter(attr2);
 
         //When you X
         SPhraseSpec p = whenYouX(attr1);
 
         //it is likely
-        SPhraseSpec p2 = nlgFactory.createClause();
-        String[] attr2Converted = attributeConverter(attr2);
-        p2.setSubject("it");
-        VPPhraseSpec verb = nlgFactory.createVerbPhrase("be");
-        verb.setPostModifier(pearsonToLikelihood(pearsonLikelihood));
-        p2.setVerb(verb);
-
+        SPhraseSpec p2 = itIsLikelihood(pearsonLikelihood);
 
         SPhraseSpec p3 = nlgFactory.createClause();
         if (abs(pearsonLikelihood) > 0.55) {
             //your x will be higher
-            NPPhraseSpec object3 = nlgFactory.createNounPhrase(attr2Converted[4]);
-            NPPhraseSpec subject3 = nlgFactory.createNounPhrase(attr2Converted[3]);
-            subject3.addModifier(object3);
-            p3.setSubject(subject3);
-            p3.setVerb(attr2Converted[positiveNegative]);
-            p3.setFeature(Feature.TENSE, Tense.FUTURE);
+            p3 = yourXWillBeHigher(attr2, pearsonLikelihood);
         }
         else {
             //your x will be affected
