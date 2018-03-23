@@ -3,6 +3,8 @@ package com.shazeldine.smushfit;
 
 import android.util.Log;
 
+import java.util.List;
+
 import simplenlg.framework.*;
 import simplenlg.lexicon.*;
 import simplenlg.realiser.english.*;
@@ -219,7 +221,7 @@ public class NLGGenerator {
         NPPhraseSpec subject = nlgFactory.createNounPhrase(attr1Converted[3]);
         subject.addModifier(attr1Converted[4]);
         p.setSubject(subject);
-        p.setFrontModifier("On days when ");
+        p.setFrontModifier("when");
         p.setVerb(attr1Converted[2]);
 
 
@@ -366,6 +368,11 @@ public class NLGGenerator {
         return output;
     }
 
+    public String likelyCorrelationGenerator(List<CorrelationIdentifier> correlationIdentifiers) {
+        return "";
+    }
+
+
     //Just used for tests
     public void testGenerator () {
         String[] convertedValues = attributeConverter("productive_min");
@@ -380,4 +387,5 @@ public class NLGGenerator {
         String s = realiser.realiseSentence(p);
         Log.i("SMUSHFIT_TEST", s);
     }
+
 }

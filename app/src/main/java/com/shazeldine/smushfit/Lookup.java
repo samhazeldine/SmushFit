@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 /**
  * Created by Samuel Hazeldine on 22/02/2018.
  */
@@ -132,5 +134,26 @@ public class Lookup {
             doubleValues[i] = Double.parseDouble(value);
         }
         return doubleValues;
+    }
+
+    //Finds the correlations between every other attribute and "attr"
+    public List<CorrelationIdentifier> findGeneralCorrelation(String attr, double pearsonParameter) {
+        String[] attributes = UserData.getAttributes();
+        List<CorrelationIdentifier> correlationList = new ArrayList<>();
+        for(int i = 0; i < attributes.length; i++) {
+            if(!attr.equals(attributes[i])) {
+                double pearsonValue = findCorrelation(attributes[i], attr);
+                if(abs(pearsonValue)>pearsonParameter) {
+                    correlationList.add(new CorrelationIdentifier(attributes[i], attr, pearsonValue));
+                }
+            }
+        }
+        return correlationList;
+    }
+
+    //Finds the "likely" correlations between every other attribute and "attr"
+    public List<CorrelationIdentifier> findLikelyCorrelation(String attr) {
+        List<CorrelationIdentifier> correlationList = findGeneralCorrelation(attr, 0.55);
+        return correlationList;
     }
 }
