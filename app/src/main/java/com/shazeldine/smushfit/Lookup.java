@@ -137,14 +137,15 @@ public class Lookup {
     }
 
     //Finds the correlations between every other attribute and "attr"
+    //What is affected by x?
     public List<CorrelationIdentifier> findGeneralCorrelation(String attr, double pearsonParameter) {
         String[] attributes = UserData.getAttributes();
         List<CorrelationIdentifier> correlationList = new ArrayList<>();
         for(int i = 0; i < attributes.length; i++) {
             if(!attr.equals(attributes[i])) {
-                double pearsonValue = findCorrelation(attributes[i], attr);
+                double pearsonValue = findCorrelation(attr, attributes[i]);
                 if(abs(pearsonValue)>pearsonParameter) {
-                    correlationList.add(new CorrelationIdentifier(attributes[i], attr, pearsonValue));
+                    correlationList.add(new CorrelationIdentifier(attr, attributes[i], pearsonValue));
                 }
             }
         }

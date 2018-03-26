@@ -69,9 +69,6 @@ public class GeneralCorrelationLookup extends Fragment implements View.OnClickLi
         Spinner generalCorrelationSpinner = (Spinner) getActivity().findViewById(R.id.generalCorrelationSpinner);
         int spinnerOnePos = generalCorrelationSpinner.getSelectedItemPosition();
         String attr1 = attributes[spinnerOnePos];
-
-        //Get values
-        //Get strings
         String generatedStatement = generator.likelyCorrelationGenerator(attr1, lookup.findLikelyCorrelation(attr1));
         intent.putExtra("GENERATED_STATEMENT", generatedStatement);
         Log.i("SMUSHFIT_SPINNER_TEST", "The generated statement is: " + generatedStatement);

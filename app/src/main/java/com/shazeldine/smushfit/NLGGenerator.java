@@ -162,6 +162,38 @@ public class NLGGenerator {
                 temp[4] = "";
                 temp[5] = "listen to less music";
                 break;
+            case "test1":
+                temp[0] = "";
+                temp[1] = "numbers of tests[1]";
+                temp[2] = "take more tests[1]";
+                temp[3] = "you";
+                temp[4] = "";
+                temp[5] = "take less tests[1]";
+                break;
+            case "test2":
+                temp[0] = "";
+                temp[1] = "numbers of tests[2]";
+                temp[2] = "take more tests[2]";
+                temp[3] = "you";
+                temp[4] = "";
+                temp[5] = "take less tests[2]";
+                break;
+            case "test3":
+                temp[0] = "";
+                temp[1] = "numbers of tests[3]";
+                temp[2] = "take more tests[3]";
+                temp[3] = "you";
+                temp[4] = "";
+                temp[5] = "take less tests[3]";
+                break;
+            case "test4":
+                temp[0] = "";
+                temp[1] = "numbers of tests[4]";
+                temp[2] = "take more tests[4]";
+                temp[3] = "you";
+                temp[4] = "";
+                temp[5] = "take less tests[4]";
+                break;
             default:
                 temp[0] = "";
                 temp[1] = "numbers of tests";
@@ -231,8 +263,10 @@ public class NLGGenerator {
         return p;
     }
 
+
+
     // "it is [likelihood] you will x more, y more, and z more.
-    public SPhraseSpec correlationSingleLikelihood(List<CorrelationIdentifier> correlationIdentifiers) {
+    public CoordinatedPhraseElement correlationSingleLikelihood(List<CorrelationIdentifier> correlationIdentifiers) {
         //Three separate lists depending on likelihood
         List<CorrelationIdentifier> extremelyLikelyCorrelations = new ArrayList<>();
         List<CorrelationIdentifier> veryLikelyCorrelations = new ArrayList<>();
@@ -249,14 +283,35 @@ public class NLGGenerator {
                 likelyCorrelations.add(id);
             }
         }
+        CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();
+        if(extremelyLikelyCorrelations.size()!=0) {
+            c.addCoordinate(correlationOnlyOneLikelihood(extremelyLikelyCorrelations));
+        }
+        if(veryLikelyCorrelations.size()!=0) {
+            c.addCoordinate(correlationOnlyOneLikelihood(veryLikelyCorrelations));
+        }
+        if(likelyCorrelations.size()!=0) {
+            c.addCoordinate(correlationOnlyOneLikelihood(likelyCorrelations));
+        }
+        c.setConjunction(";");
 
-        //Generate clause for each
-        SPhraseSpec pExtremely = nlgFactory.createClause();
-        SPhraseSpec pVery = nlgFactory.createClause();
-        SPhraseSpec pLikely = nlgFactory.createClause();
+        //TODO Need to figure out how to add semi-colon conjunction properly.
+        return c;
+    }
 
-        return pExtremely;
-        //TODO need to decide on the direction. I think I fucked it.
+    //Generates "it is [likelihood] you will x more, y more, and z more (for a single likelihood)
+    public CoordinatedPhraseElement correlationOnlyOneLikelihood(List<CorrelationIdentifier> correlationIdentifiers) {
+        CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();
+        SPhraseSpec itIsLikely = itIsLikelihood(correlationIdentifiers.get(0).getCorrelationValue());
+        for(CorrelationIdentifier id: correlationIdentifiers) {
+            c.addCoordinate(yourXWillBeHigher(id.getAttr2(), id.getCorrelationValue()));
+        }
+        c.setConjunction("and");
+        CoordinatedPhraseElement c2 = nlgFactory.createCoordinatedPhrase();
+        c2.addCoordinate(itIsLikely);
+        c2.addCoordinate(c);
+        c2.setConjunction("");
+        return c2;
     }
 
     //Generates "your x will be higher"
@@ -422,18 +477,22 @@ public class NLGGenerator {
         return output;
     }
 
+    //Generates statement for "What is affected by X?"
     public String likelyCorrelationGenerator(String attr, List<CorrelationIdentifier> correlationIdentifiers) {
         String[] convertedAttributes = attributeConverter(attr);
         if(correlationIdentifiers.size() == 0) {
-            NLGElement s = nlgFactory.createSentence("Nothing is likely to affect your " + convertedAttributes[1]);
+            NLGElement s = nlgFactory.createSentence("Nothing is likely to be affected by your " + convertedAttributes[1]);
             return realiser.realiseSentence(s);
         }
         else {
-            SPhraseSpec p = whenYouX(attr);
-            String output = realiser.realiseSentence(p);
-            return output;
+            CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();
+            c.addCoordinate(whenYouX(attr));
+            c.addCoordinate(correlationSingleLikelihood(correlationIdentifiers));
+            c.setConjunction(",");
+            return realiser.realiseSentence(c);
         }
     }
+
 
 
     //Just used for tests
