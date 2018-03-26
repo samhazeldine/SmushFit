@@ -62,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
         UserData.getEntriesOfAttribute("productive_min").setGoals(120, "High");
         UserData.getEntriesOfAttribute("sleep_awakenings").setGoals(2, "Low");
         UserData.getEntriesOfAttribute("tracks").setGoals(-1, "None");
-        UserData.getEntriesOfAttribute("test1").setGoals(2, "High");
-        UserData.getEntriesOfAttribute("test2").setGoals(2, "High");
+        UserData.getEntriesOfAttribute("test1").setGoals(2000, "Low");
+        UserData.getEntriesOfAttribute("test2").setGoals(-1, "None");
         UserData.getEntriesOfAttribute("test3").setGoals(2, "Low");
-        UserData.getEntriesOfAttribute("test4").setGoals(2, "High");
+        UserData.getEntriesOfAttribute("test4").setGoals(8, "High");
 
     }
 

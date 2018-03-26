@@ -87,7 +87,7 @@ public class NLGGenerator {
         else if(d == (long) d)
             return String.format("%d",(long)d);
         else
-            return String.format("%s",d);
+            return String.format("%.1f",d);
     }
 
     // Converts an attribute to various values
@@ -167,35 +167,35 @@ public class NLGGenerator {
                 break;
             case "test1":
                 temp[0] = "";
-                temp[1] = "numbers of tests[1]";
-                temp[2] = "take more tests[1]";
+                temp[1] = "calories consumed";
+                temp[2] = "consume more calories";
                 temp[3] = "you";
                 temp[4] = "";
-                temp[5] = "take less tests[1]";
+                temp[5] = "consume less calories";
                 break;
             case "test2":
                 temp[0] = "";
-                temp[1] = "numbers of tests[2]";
-                temp[2] = "take more tests[2]";
+                temp[1] = "number of tennis games";
+                temp[2] = "play more tennis";
                 temp[3] = "you";
                 temp[4] = "";
-                temp[5] = "take less tests[2]";
+                temp[5] = "play less tennis";
                 break;
             case "test3":
-                temp[0] = "";
-                temp[1] = "numbers of tests[3]";
-                temp[2] = "take more tests[3]";
+                temp[0] = "bars";
+                temp[1] = "amount of chocolate";
+                temp[2] = "eat more chocolate";
                 temp[3] = "you";
                 temp[4] = "";
-                temp[5] = "take less tests[3]";
+                temp[5] = "eat less chocolate";
                 break;
             case "test4":
                 temp[0] = "";
-                temp[1] = "numbers of tests[4]";
-                temp[2] = "take more tests[4]";
+                temp[1] = "glasses of water drunk";
+                temp[2] = "drink more water";
                 temp[3] = "you";
                 temp[4] = "";
-                temp[5] = "take less tests[4]";
+                temp[5] = "drink less water";
                 break;
             default:
                 temp[0] = "";
@@ -514,9 +514,17 @@ public class NLGGenerator {
         trendAndMaxAndMin.setConjunction(",");
         DocumentElement trendAndMaxAndMinSentence = nlgFactory.createSentence(trendAndMaxAndMin);
 
+        CoordinatedPhraseElement averageInTimeFrame = nlgFactory.createCoordinatedPhrase();
+        NLGElement inTime = nlgFactory.createStringElement("in this time");
+        SPhraseSpec average = minMaxMeanGenerator(attr, mean, "average");
+        averageInTimeFrame.addCoordinate(inTime);
+        averageInTimeFrame.addCoordinate(average);
+        averageInTimeFrame.setConjunction(",");
+        DocumentElement averageSentence = nlgFactory.createSentence(averageInTimeFrame);
+
         DocumentElement correlation = nlgFactory.createSentence(likelyCorrelationGenerator(attr, correlationIdentifiers));
 
-        DocumentElement par = nlgFactory.createParagraph(Arrays.asList(currentGoal, trendAndMaxAndMinSentence, correlation));
+        DocumentElement par = nlgFactory.createParagraph(Arrays.asList(currentGoal, trendAndMaxAndMinSentence, averageSentence, correlation));
 
         String output = realiser.realise(par).getRealisation();
         return output;
