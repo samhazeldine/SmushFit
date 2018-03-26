@@ -3,7 +3,10 @@ package com.shazeldine.smushfit;
 
 import android.util.Log;
 
+import org.w3c.dom.Document;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import simplenlg.framework.*;
@@ -444,6 +447,13 @@ public class NLGGenerator {
 
     //Generates speech for trend
     public String trendGenerator(String attr, double slope) {
+        CoordinatedPhraseElement c = trendPhraseGenerator(attr, slope);
+        String output = realiser.realiseSentence(c);
+        return output;
+    }
+
+    //Generates speech for trend
+    private CoordinatedPhraseElement trendPhraseGenerator(String attr, double slope) {
         String[] convertedValues = attributeConverter(attr);
 
         //For time frame
@@ -459,10 +469,10 @@ public class NLGGenerator {
         NPPhraseSpec subject = nlgFactory.createNounPhrase("your");
         NPPhraseSpec object = nlgFactory.createNounPhrase(convertedValues[1]);
         if (slope < 0) {
-            object.setPostModifier("has decreased");
+            object.setPostModifier("has been decreasing");
         }
         else if (slope > 0) {
-            object.setPostModifier("has increased");
+            object.setPostModifier("has been increasing");
         }
         else {
             object.setPostModifier("has remained constant");
@@ -473,8 +483,7 @@ public class NLGGenerator {
         c.addCoordinate(pTimeFrame);
         c.addCoordinate(p);
         c.setConjunction(",");
-        String output = realiser.realiseSentence(c);
-        return output;
+        return c;
     }
 
     //Generates statement for "What is affected by X?"
@@ -493,6 +502,37 @@ public class NLGGenerator {
         }
     }
 
+    //Generates full paragraph for an attribute.
+    public String generateFullParagraphForAttribute(String attr, List<CorrelationIdentifier> correlationIdentifiers, double max, double min, double mean, double slope, double current, double goal, String highLow) {
+        DocumentElement currentGoal = nlgFactory.createSentence(todayGoalGenerator(attr, goal, current, highLow));
+
+        CoordinatedPhraseElement trend = trendPhraseGenerator(attr, slope);
+        CoordinatedPhraseElement maxMin = maximumAndMinimum(attr, max, min);
+        CoordinatedPhraseElement trendAndMaxAndMin = nlgFactory.createCoordinatedPhrase();
+        trendAndMaxAndMin.addCoordinate(trend);
+        trendAndMaxAndMin.addCoordinate(maxMin);
+        trendAndMaxAndMin.setConjunction(",");
+        DocumentElement trendAndMaxAndMinSentence = nlgFactory.createSentence(trendAndMaxAndMin);
+
+        DocumentElement correlation = nlgFactory.createSentence(likelyCorrelationGenerator(attr, correlationIdentifiers));
+
+        DocumentElement par = nlgFactory.createParagraph(Arrays.asList(currentGoal, trendAndMaxAndMinSentence, correlation));
+
+        String output = realiser.realise(par).getRealisation();
+        return output;
+    }
+
+    //Generates maximum AND minimum together
+    private CoordinatedPhraseElement maximumAndMinimum(String attr, double max, double min) {
+        String[] convertedValues = attributeConverter(attr);
+        NLGElement maximum = nlgFactory.createStringElement("with a maximum of " + doubleToString(max, attr) + " " + convertedValues[0]);
+        NLGElement minimum = nlgFactory.createStringElement("a minimum of " + doubleToString(min, attr) + " " + convertedValues[0]);
+        CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();
+        c.addCoordinate(maximum);
+        c.addCoordinate(minimum);
+        c.setConjunction("and");
+        return c;
+    }
 
 
     //Just used for tests
