@@ -183,7 +183,7 @@ public class NLGGenerator {
                 break;
             case "test3":
                 temp[0] = "bars";
-                temp[1] = "amount of chocolate";
+                temp[1] = "amount of chocolate eaten";
                 temp[2] = "eat more chocolate";
                 temp[3] = "you";
                 temp[4] = "";
@@ -286,20 +286,34 @@ public class NLGGenerator {
                 likelyCorrelations.add(id);
             }
         }
-        CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();
+        CoordinatedPhraseElement c1 = nlgFactory.createCoordinatedPhrase();
+        CoordinatedPhraseElement c2 = nlgFactory.createCoordinatedPhrase();
+        c1.setConjunction("");
+        c2.setConjunction("");
         if(extremelyLikelyCorrelations.size()!=0) {
-            c.addCoordinate(correlationOnlyOneLikelihood(extremelyLikelyCorrelations));
+            c1.addCoordinate(correlationOnlyOneLikelihood(extremelyLikelyCorrelations));
         }
         if(veryLikelyCorrelations.size()!=0) {
-            c.addCoordinate(correlationOnlyOneLikelihood(veryLikelyCorrelations));
+            c1.addCoordinate(correlationOnlyOneLikelihood(veryLikelyCorrelations));
         }
         if(likelyCorrelations.size()!=0) {
-            c.addCoordinate(correlationOnlyOneLikelihood(likelyCorrelations));
+            if(c1.getChildren().size() == 2) {
+                c1.setConjunction(";");
+            }
+            if(c1.getChildren().size()!=0) {
+                c2.setConjunction("; and");
+            }
+            c2.addCoordinate(c1);
+            c2.addCoordinate(correlationOnlyOneLikelihood(likelyCorrelations));
         }
-        c.setConjunction(";");
+        else{
+            if(c1.getChildren().size()==2){
+                c1.setConjunction("; and");
+            }
+        }
 
         //TODO Need to figure out how to add semi-colon conjunction properly.
-        return c;
+        return c2;
     }
 
     //Generates "it is [likelihood] you will x more, y more, and z more (for a single likelihood)
@@ -431,7 +445,7 @@ public class NLGGenerator {
         }
         //If the type of data is something where lower is better (e.g. awakenings in the night)
         else if (highLow.equals("Low")) {
-            if (dCurrent < dGoal) {
+            if (dCurrent <= dGoal) {
                 subject.setPreModifier("so you are still on track for");
             }
             else {
