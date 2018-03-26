@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
         List<String[]> userDataString = readCSV();
         convertToUserData(userDataString);
         setGoals();
-        testInsights();
-        //testInsightsTwo();
     }
 
     // Reads each line in the CSV and converts it into a 2D array of Strings.

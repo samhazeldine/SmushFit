@@ -80,11 +80,13 @@ public class NLGGenerator {
             else if (d == 2.0) {
                 return "bad";
             }
-            else {
+            else if (d == 1.0) {
                 return "terrible";
             }
+
+
         }
-        else if(d == (long) d)
+        if(d == (long) d)
             return String.format("%d",(long)d);
         else
             return String.format("%.1f",d);
@@ -190,8 +192,8 @@ public class NLGGenerator {
                 temp[5] = "eat less chocolate";
                 break;
             case "test4":
-                temp[0] = "";
-                temp[1] = "glasses of water drunk";
+                temp[0] = "glasses";
+                temp[1] = "amount of water drunk";
                 temp[2] = "drink more water";
                 temp[3] = "you";
                 temp[4] = "";
@@ -518,7 +520,13 @@ public class NLGGenerator {
 
     //Generates full paragraph for an attribute.
     public String generateFullParagraphForAttribute(String attr, List<CorrelationIdentifier> correlationIdentifiers, double max, double min, double mean, double slope, double current, double goal, String highLow) {
-        DocumentElement currentGoal = nlgFactory.createSentence(todayGoalGenerator(attr, goal, current, highLow));
+        DocumentElement currentGoal;
+        if(highLow.equals("None")) {
+            currentGoal = nlgFactory.createSentence(minMaxMeanGenerator(attr, current, "current"));
+        }
+        else {
+            currentGoal = nlgFactory.createSentence(todayGoalGenerator(attr, goal, current, highLow));
+        }
 
         CoordinatedPhraseElement trend = trendPhraseGenerator(attr, slope);
         CoordinatedPhraseElement maxMin = maximumAndMinimum(attr, max, min);
