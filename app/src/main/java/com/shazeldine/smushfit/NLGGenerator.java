@@ -49,7 +49,7 @@ public class NLGGenerator {
 
     // Creates an NL phrase for min or max
     // Your max/min/average step-count is 21,000 steps
-    public SPhraseSpec minMaxMeanGenerator (String attr, double max, String minMax) {
+    public SPhraseSpec minMaxMeanGenerator (String attr, double value, String minMax) {
         String[] convertedValues = attributeConverter(attr);
         SPhraseSpec p = nlgFactory.createClause();
         p.setFeature(Feature.PERSON, Person.SECOND);
@@ -57,7 +57,7 @@ public class NLGGenerator {
         String maxAttr = minMax + " " + convertedValues[1];
         NPPhraseSpec insightType = nlgFactory.createNounPhrase(maxAttr);
         VPPhraseSpec verb = nlgFactory.createVerbPhrase("be");
-        NPPhraseSpec number = nlgFactory.createNounPhrase(doubleToString(max, attr) + " " + convertedValues[0]);
+        NPPhraseSpec number = nlgFactory.createNounPhrase(doubleToString(value, attr) + " " + convertedValues[0]);
         verb.addComplement(number);
         subject.addModifier(insightType);
         p.setSubject(subject);
@@ -153,7 +153,7 @@ public class NLGGenerator {
                 break;
             case "sleep_awakenings":
                 temp[0] = "";
-                temp[1] = "times awoken in the night";
+                temp[1] = "number of awakenings";
                 temp[2] = "wake more in the night";
                 temp[3] = "you";
                 temp[4] = "";
@@ -256,14 +256,14 @@ public class NLGGenerator {
         }
     }
 
-    // Generates phrase "when you X"
+    // Generates phrase "On days you"
     public SPhraseSpec whenYouX(String attr) {
         SPhraseSpec p = nlgFactory.createClause();
         String[] attrConverted = attributeConverter(attr);
         NPPhraseSpec subject = nlgFactory.createNounPhrase(attrConverted[3]);
         subject.addModifier(attrConverted[4]);
         p.setSubject(subject);
-        p.setFrontModifier("when");
+        p.setFrontModifier("on days");
         p.setVerb(attrConverted[2]);
         return p;
     }
@@ -313,8 +313,6 @@ public class NLGGenerator {
                 c1.setConjunction("; and");
             }
         }
-
-        //TODO Need to figure out how to add semi-colon conjunction properly.
         return c2;
     }
 
@@ -347,7 +345,10 @@ public class NLGGenerator {
         return p;
     }
 
+
+
     //Geneartes "it is [likelihood]
+
     private SPhraseSpec itIsLikelihood(double pearsonLikelihood) {
         SPhraseSpec p = nlgFactory.createClause();
         p.setSubject("it");
@@ -357,11 +358,12 @@ public class NLGGenerator {
         return p;
     }
 
+
     // Generates the statements for correlation
     public String correlationGenerator (String attr1, String attr2, double pearsonLikelihood) {
         String[] attr2Converted = attributeConverter(attr2);
 
-        //When you X
+        //On days you
         SPhraseSpec p = whenYouX(attr1);
 
         //it is likely
