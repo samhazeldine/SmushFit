@@ -630,7 +630,8 @@ public class NLGGenerator {
             littleMorePhrase.addCoordinate(convertedAttributes[1]);
         }
         littleMorePhrase.setConjunction("and");
-        littleMorePhrase.addPreModifier("Put in a little more work to meet you goals for ");
+        littleMorePhrase.addPreModifier("Put in a little more work to meet your ");
+        littleMorePhrase.addPostModifier("goals");
 
         CoordinatedPhraseElement onTrackPhrase = nlgFactory.createCoordinatedPhrase();
         for(String s:onTrack) {
@@ -646,7 +647,7 @@ public class NLGGenerator {
             failedPhrase.addCoordinate(convertedAttributes[1]);
         }
         failedPhrase.setConjunction("and");
-        failedPhrase.addPreModifier("Unfortunately you have missed your goals for ");
+        failedPhrase.addPreModifier("Unfortunately you have exceeded your goals for ");
 
 
         DocumentElement e1 = nlgFactory.createSentence(metPhrase);
