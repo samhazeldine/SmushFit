@@ -157,4 +157,36 @@ public class Lookup {
         List<CorrelationIdentifier> correlationList = findGeneralCorrelation(attr, 0.55);
         return correlationList;
     }
+
+    // 0 - attribute, 1 - met, onTrack, littleMore, failed
+    public List<String[]> findAllGoals() {
+        String[] attributes = UserData.getAttributes();
+        List<String[]> goalProgresses = new ArrayList<>();
+        for(int i = 0; i < attributes.length; i++) {
+            EntriesOfAttribute entry = UserData.getEntriesOfAttribute(attributes[i]);
+            String attribute = attributes[i];
+            double current = findCurrent(attribute);
+            double goal = UserData.getGoalForAttribute(attribute);
+            String goalAim = entry.getGoalAim();
+            if(!goalAim.equals("None")) {
+                if(goalAim.equals("High") && (current >= goal)) {
+                    String[] temp = {attribute, "met"};
+                    goalProgresses.add(temp);
+                }
+                else if(goalAim.equals("High") && (current < goal)) {
+                    String[] temp = {attribute, "littleMore"};
+                    goalProgresses.add(temp);
+                }
+                else if(goalAim.equals("Low") && (current > goal)) {
+                    String[] temp = {attribute, "failed"};
+                    goalProgresses.add(temp);
+                }
+                else {
+                    String[] temp = {attribute, "onTrack"};
+                    goalProgresses.add(temp);
+                }
+            }
+        }
+        return goalProgresses;
+    }
 }

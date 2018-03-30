@@ -596,6 +596,68 @@ public class NLGGenerator {
         return c;
     }
 
+    public String generateAllGoals(List<String[]> goalProgresses) {
+        List<String> met = new ArrayList<>();
+        List<String> onTrack = new ArrayList<>();
+        List<String> littleMore = new ArrayList<>();
+        List<String> failed = new ArrayList<>();
+
+        for(String[] goal :goalProgresses) {
+            if(goal[1].equals("met")) {
+                met.add(goal[0]);
+            }
+            else if (goal[1].equals("onTrack")) {
+                onTrack.add(goal[0]);
+            }
+            else if (goal[1].equals("littleMore")) {
+                littleMore.add(goal[0]);
+            }
+            else {
+                failed.add(goal[0]);
+            }
+        }
+        CoordinatedPhraseElement metPhrase = nlgFactory.createCoordinatedPhrase();
+        for(String s:met) {
+            String[] convertedAttributes = attributeConverter(s);
+            metPhrase.addCoordinate(convertedAttributes[1]);
+        }
+        metPhrase.setConjunction("and");
+        metPhrase.addPreModifier("Well done for meeting your goals for ");
+
+        CoordinatedPhraseElement littleMorePhrase = nlgFactory.createCoordinatedPhrase();
+        for(String s:littleMore) {
+            String[] convertedAttributes = attributeConverter(s);
+            littleMorePhrase.addCoordinate(convertedAttributes[1]);
+        }
+        littleMorePhrase.setConjunction("and");
+        littleMorePhrase.addPreModifier("Put in a little more work to meet you goals for ");
+
+        CoordinatedPhraseElement onTrackPhrase = nlgFactory.createCoordinatedPhrase();
+        for(String s:onTrack) {
+            String[] convertedAttributes = attributeConverter(s);
+            onTrackPhrase.addCoordinate(convertedAttributes[1]);
+        }
+        onTrackPhrase.setConjunction("and");
+        onTrackPhrase.addPreModifier("You are still on track to meet your goals for ");
+
+        CoordinatedPhraseElement failedPhrase = nlgFactory.createCoordinatedPhrase();
+        for(String s:failed) {
+            String[] convertedAttributes = attributeConverter(s);
+            failedPhrase.addCoordinate(convertedAttributes[1]);
+        }
+        failedPhrase.setConjunction("and");
+        failedPhrase.addPreModifier("Unfortunately you have missed your goals for ");
+
+
+        DocumentElement e1 = nlgFactory.createSentence(metPhrase);
+        DocumentElement e2 = nlgFactory.createSentence(littleMorePhrase);
+        DocumentElement e3 = nlgFactory.createSentence(onTrackPhrase);
+        DocumentElement e4 = nlgFactory.createSentence(failedPhrase);
+
+        DocumentElement par = nlgFactory.createParagraph(Arrays.asList(e1, e2, e3, e4));
+
+        return realiser.realiseSentence(par);
+    }
 
     //Just used for tests
     public void testGenerator () {
