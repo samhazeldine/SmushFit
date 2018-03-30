@@ -114,18 +114,21 @@ public class NLGGenerator {
             case "steps":
                 temp[0] = "steps";
                 temp[1] = "step-count";
-                temp[2] = "is higher";
+                //temp[2] = "is higher";
+                temp[2] = "walk more";
                 temp[3] = "your";
-                temp[4] = "step-count";
-                temp[5] = "is lower";
+                temp[4] = "";
+                //temp[4] = "step-count";
+                //temp[5] = "is lower";
+                temp[5] = "walk less";
                 break;
             case "distracting_min":
                 temp[0] = "minutes";
                 temp[1] = "time spent distracted";
-                temp[2] = "are distracted more";
+                temp[2] = "be distracted more";
                 temp[3] = "you";
                 temp[4] = "";
-                temp[5] = "are distracted less";
+                temp[5] = "be distracted less";
                 break;
             case "events":
                 temp[0] = "";
@@ -138,18 +141,18 @@ public class NLGGenerator {
             case "mood":
                 temp[0] = "";
                 temp[1] = "mood";
-                temp[2] = "are in a better mood";
+                temp[2] = "be in a better mood";
                 temp[3] = "you";
                 temp[4] = "";
-                temp[5] = "are in a worse mood";
+                temp[5] = "be in a worse mood";
                 break;
             case "productive_min":
                 temp[0] = "minutes";
                 temp[1] = "time spent being productive";
-                temp[2] = "are more productive";
+                temp[2] = "be more productive";
                 temp[3] = "you";
                 temp[4] = "";
-                temp[5] = "are less productive";
+                temp[5] = "be less productive";
                 break;
             case "sleep_awakenings":
                 temp[0] = "";
@@ -260,7 +263,7 @@ public class NLGGenerator {
     public SPhraseSpec whenYouX(String attr) {
         SPhraseSpec p = nlgFactory.createClause();
         String[] attrConverted = attributeConverter(attr);
-        NPPhraseSpec subject = nlgFactory.createNounPhrase(attrConverted[3]);
+        NPPhraseSpec subject = nlgFactory.createNounPhrase("you");
         subject.addModifier(attrConverted[4]);
         p.setSubject(subject);
         p.setFrontModifier("on days");
@@ -319,7 +322,7 @@ public class NLGGenerator {
     //Generates "it is [likelihood] you will x more, y more, and z more (for a single likelihood)
     public CoordinatedPhraseElement correlationOnlyOneLikelihood(List<CorrelationIdentifier> correlationIdentifiers) {
         CoordinatedPhraseElement c = nlgFactory.createCoordinatedPhrase();
-        SPhraseSpec itIsLikely = itIsLikelihood(correlationIdentifiers.get(0).getCorrelationValue());
+        SPhraseSpec itIsLikely = itIsLikelihoodNew(correlationIdentifiers.get(0).getCorrelationValue());
         for(CorrelationIdentifier id: correlationIdentifiers) {
             c.addCoordinate(yourXWillBeHigher(id.getAttr2(), id.getCorrelationValue()));
         }
@@ -332,6 +335,7 @@ public class NLGGenerator {
     }
 
     //Generates "your x will be higher"
+    /*
     private SPhraseSpec yourXWillBeHigher(String attr, double pearsonLikelihood) {
         int positiveNegative = doubleToPositiveNegative(pearsonLikelihood);
         String[] attrConverted = attributeConverter(attr);
@@ -344,11 +348,21 @@ public class NLGGenerator {
         p.setFeature(Feature.TENSE, Tense.FUTURE);
         return p;
     }
+    */
+
+    private SPhraseSpec yourXWillBeHigher(String attr, double pearsonLikelihood) {
+        int positiveNegative = doubleToPositiveNegative(pearsonLikelihood);
+        String[] attrConverted = attributeConverter(attr);
+        SPhraseSpec p = nlgFactory.createClause();
+        p.setObject(attrConverted[positiveNegative]);
+        return p;
+    }
+
+
 
 
 
     //Geneartes "it is [likelihood]
-
     private SPhraseSpec itIsLikelihood(double pearsonLikelihood) {
         SPhraseSpec p = nlgFactory.createClause();
         p.setSubject("it");
@@ -359,6 +373,20 @@ public class NLGGenerator {
     }
 
 
+    //Geneartes "it is [likelihood]
+    private SPhraseSpec itIsLikelihoodNew(double pearsonLikelihood) {
+        SPhraseSpec p = nlgFactory.createClause();
+        p.setSubject("you");
+        VPPhraseSpec verb = nlgFactory.createVerbPhrase("are");
+        NPPhraseSpec object = nlgFactory.createNounPhrase(pearsonToLikelihood(pearsonLikelihood));
+        object.setPostModifier("to");
+        verb.setPostModifier(object);
+        p.setVerb(verb);
+        return p;
+    }
+
+
+
     // Generates the statements for correlation
     public String correlationGenerator (String attr1, String attr2, double pearsonLikelihood) {
         String[] attr2Converted = attributeConverter(attr2);
@@ -367,14 +395,16 @@ public class NLGGenerator {
         SPhraseSpec p = whenYouX(attr1);
 
         //it is likely
-        SPhraseSpec p2 = itIsLikelihood(pearsonLikelihood);
+        SPhraseSpec p2;
 
         SPhraseSpec p3 = nlgFactory.createClause();
         if (abs(pearsonLikelihood) > 0.55) {
             //your x will be higher
             p3 = yourXWillBeHigher(attr2, pearsonLikelihood);
+            p2 = itIsLikelihoodNew(pearsonLikelihood);
         }
         else {
+            p2 = itIsLikelihood(pearsonLikelihood);
             //your x will be affected
             NPPhraseSpec subject3 = nlgFactory.createNounPhrase("your");
             NPPhraseSpec object3 = nlgFactory.createNounPhrase(attr2Converted[1]);
