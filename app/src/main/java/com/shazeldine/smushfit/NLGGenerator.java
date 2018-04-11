@@ -498,7 +498,7 @@ public class NLGGenerator {
         CoordinatedPhraseElement c = trendPhraseGenerator(attr, slope);
         String s = "Slope is: " + slope;
         Log.i("TEST", s);
-        if(abs(slope) >= 0.1) {
+        if(abs(slope) > 0.1) {
             String slopeValue = doubleToString(slope, attr);
             NLGElement slopeStatement = nlgFactory.createStringElement("with a slope of " + slopeValue);
             c.addCoordinate(slopeStatement);
