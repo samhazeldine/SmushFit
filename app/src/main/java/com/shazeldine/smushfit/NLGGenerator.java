@@ -496,6 +496,14 @@ public class NLGGenerator {
     //Generates speech for trend
     public String trendGenerator(String attr, double slope) {
         CoordinatedPhraseElement c = trendPhraseGenerator(attr, slope);
+        String s = "Slope is: " + slope;
+        Log.i("TEST", s);
+        if(abs(slope) >= 0.1) {
+            String slopeValue = doubleToString(slope, attr);
+            NLGElement slopeStatement = nlgFactory.createStringElement("with a slope of " + slopeValue);
+            c.addCoordinate(slopeStatement);
+            c.setConjunction(",");
+        }
         String output = realiser.realiseSentence(c);
         return output;
     }
@@ -516,10 +524,10 @@ public class NLGGenerator {
         p.setFeature(Feature.PERSON, Person.SECOND);
         NPPhraseSpec subject = nlgFactory.createNounPhrase("your");
         NPPhraseSpec object = nlgFactory.createNounPhrase(convertedValues[1]);
-        if (slope < 0) {
+        if (slope < -0.1) {
             object.setPostModifier("has been decreasing");
         }
-        else if (slope > 0) {
+        else if (slope > 0.1) {
             object.setPostModifier("has been increasing");
         }
         else {
