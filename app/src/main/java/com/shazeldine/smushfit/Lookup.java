@@ -1,5 +1,7 @@
 package com.shazeldine.smushfit;
 
+import android.util.Log;
+
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Max;
@@ -106,9 +108,11 @@ public class Lookup {
         double[] doubleValues = listOfStringToDoubleArray(nonEmptyValues);
         SimpleRegression regression = new SimpleRegression();
         for (int i=0; i<nonEmptyValues.size(); i++) {
-           regression.addData(i, doubleValues[i]);
+            regression.addData(i, doubleValues[i]);
         }
         double result = regression.getSlope();
+        String s = "The slope is: " + result;
+        Log.i("TEST", s);
         return result;
     }
 

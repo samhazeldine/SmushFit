@@ -498,7 +498,7 @@ public class NLGGenerator {
         CoordinatedPhraseElement c = trendPhraseGenerator(attr, slope);
         String s = "Slope is: " + slope;
         Log.i("TEST", s);
-        if(abs(slope) > 0.1) {
+        if(abs(slope) > 0.01) {
             String slopeValue = doubleToString(slope, attr);
             NLGElement slopeStatement = nlgFactory.createStringElement("with a slope of " + slopeValue);
             c.addCoordinate(slopeStatement);
@@ -524,14 +524,14 @@ public class NLGGenerator {
         p.setFeature(Feature.PERSON, Person.SECOND);
         NPPhraseSpec subject = nlgFactory.createNounPhrase("your");
         NPPhraseSpec object = nlgFactory.createNounPhrase(convertedValues[1]);
-        if (slope < -0.1) {
+        if (slope < -0.01) {
             object.setPostModifier("has been decreasing");
         }
-        else if (slope > 0.1) {
+        else if (slope > 0.01) {
             object.setPostModifier("has been increasing");
         }
         else {
-            object.setPostModifier("has remained constant");
+            object.setPostModifier("has remained relatively constant");
         }
         p.setSubject(subject);
         p.setObject(object);

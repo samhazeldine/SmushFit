@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     // Reads each line in the CSV and converts it into a 2D array of Strings.
     public List<String[]> readCSV() {
         try {
-            InputStreamReader is = new InputStreamReader(getAssets().open("userdata.csv"));
+            InputStreamReader is = new InputStreamReader(getAssets().open("userdata2.csv"));
             BufferedReader reader = new BufferedReader(is);
             CSVReader csvReader = new CSVReader(reader);
             List<String[]> userDataStrings = csvReader.readAll();
