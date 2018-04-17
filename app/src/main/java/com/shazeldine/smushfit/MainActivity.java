@@ -52,18 +52,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setGoals () {
-        UserData.getEntriesOfAttribute("sleep").setGoals(480, "High");
-        UserData.getEntriesOfAttribute("steps").setGoals(10000, "High");
-        UserData.getEntriesOfAttribute("distracting_min").setGoals(30, "Low");
-        UserData.getEntriesOfAttribute("events").setGoals(-1, "None");
-        UserData.getEntriesOfAttribute("mood").setGoals(5, "High");
-        UserData.getEntriesOfAttribute("productive_min").setGoals(120, "High");
-        UserData.getEntriesOfAttribute("sleep_awakenings").setGoals(2, "Low");
+        UserData.getEntriesOfAttribute("sleep").setGoals(420, "High");
+        UserData.getEntriesOfAttribute("steps").setGoals(7000, "High");
+        UserData.getEntriesOfAttribute("distracting_min").setGoals(60, "Low");
+        UserData.getEntriesOfAttribute("mood").setGoals(4, "High");
+        UserData.getEntriesOfAttribute("productive_min").setGoals(180, "High");
+        UserData.getEntriesOfAttribute("sleep_awakenings").setGoals(1, "Low");
         UserData.getEntriesOfAttribute("tracks").setGoals(-1, "None");
         UserData.getEntriesOfAttribute("test1").setGoals(2000, "Low");
         UserData.getEntriesOfAttribute("test2").setGoals(-1, "None");
-        UserData.getEntriesOfAttribute("test3").setGoals(2, "Low");
-        UserData.getEntriesOfAttribute("test4").setGoals(8, "High");
+        UserData.getEntriesOfAttribute("test3").setGoals(1, "Low");
+        UserData.getEntriesOfAttribute("test4").setGoals(7, "High");
 
     }
 
